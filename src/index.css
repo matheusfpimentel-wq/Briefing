@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ink-900 text-slate-100 font-sans antialiased;
+    background-image: radial-gradient(60% 50% at 50% 0%, rgba(124, 58, 237, 0.18) 0%, rgba(10, 10, 15, 0) 70%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+  }
+
+  /* Foco visível para acessibilidade */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent-400 ring-offset-2 ring-offset-ink-900;
+  }
+}
+
+@layer components {
+  .field-label {
+    @apply block text-sm font-medium text-slate-300 mb-2;
+  }
+
+  .field-input {
+    @apply w-full rounded-xl bg-ink-700 border border-ink-500 px-4 py-3 text-base text-slate-100
+      placeholder:text-slate-500 transition-colors
+      focus:border-accent-500 focus:ring-2 focus:ring-accent-500/40;
+  }
+
+  .field-error {
+    @apply mt-2 text-sm text-red-400;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-semibold
+      transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent-600 text-white hover:bg-accent-500 active:scale-[0.98]
+      shadow-lg shadow-accent-900/40;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-slate-300 hover:bg-ink-700;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium
+      transition-all cursor-pointer select-none active:scale-95;
+  }
+
+  .chip-off {
+    @apply chip border-ink-500 bg-ink-700 text-slate-300 hover:border-accent-500/60;
+  }
+
+  .chip-on {
+    @apply chip border-accent-500 bg-accent-600/20 text-accent-200;
+  }
+
+  .card {
+    @apply rounded-2xl border border-ink-600 bg-ink-800/80 backdrop-blur;
+  }
+}
