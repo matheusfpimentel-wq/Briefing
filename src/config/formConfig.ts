@@ -36,6 +36,7 @@ export type CustomStep =
   | 'mustPlay'
   | 'doNotPlay'
   | 'references'
+  | 'attractions'
   | 'moments'
   | 'services'
   | 'acknowledgements'
@@ -161,6 +162,14 @@ export const STEPS: StepDef[] = [
     subtitle: 'Playlists, fotos, Pinterest, vídeos. Cole o que representa a vibe.',
     custom: 'references',
   },
+  {
+    id: 'attractions',
+    block: 4,
+    blockLabel: 'Música',
+    title: 'Vai ter outra atração musical?',
+    subtitle: 'Banda, cantor, sax ao vivo, percussão. Me conte o horário e quanto tempo dura, pra eu planejar as transições.',
+    custom: 'attractions',
+  },
 
   // ─────────────── BLOCO 5 — MOMENTOS ESPECIAIS ───────────────
   {
@@ -255,6 +264,7 @@ export function createEmptyBriefing(): BriefingData {
     do_not_play: [],
     references: [],
     signature_song: '',
+    other_attractions: [],
     moments: {},
     other_moments: '',
     sound_structure: '',

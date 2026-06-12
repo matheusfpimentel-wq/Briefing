@@ -2,6 +2,7 @@ import { StepDef } from '@/config/formConfig'
 import type { BriefingData } from '@/lib/types'
 import FieldRenderer from './fields/FieldRenderer'
 import AcknowledgementsStep from './steps/AcknowledgementsStep'
+import AttractionsStep from './steps/AttractionsStep'
 import AudienceStep from './steps/AudienceStep'
 import DoNotPlayStep from './steps/DoNotPlayStep'
 import EnergyStep from './steps/EnergyStep'
@@ -43,6 +44,8 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
         return <DoNotPlayStep {...stepProps} />
       case 'references':
         return <ReferencesStep {...stepProps} />
+      case 'attractions':
+        return <AttractionsStep {...stepProps} />
       case 'moments':
         return <MomentsStep {...stepProps} />
       case 'services':

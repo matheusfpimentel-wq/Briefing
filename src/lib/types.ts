@@ -20,6 +20,13 @@ export interface ReferenceItem {
   value: string
 }
 
+/** Outra atração musical (banda, cantor, sax ao vivo, etc.). */
+export interface Attraction {
+  description: string
+  time: string
+  duration: string
+}
+
 export interface BriefingData {
   // ── Bloco 1 — Evento e contato ──
   respondent_name: string
@@ -52,6 +59,7 @@ export interface BriefingData {
   do_not_play: string[]
   references: ReferenceItem[]
   signature_song: string
+  other_attractions: Attraction[]
 
   // ── Bloco 5 — Momentos especiais ──
   moments: Record<string, MomentValue>

@@ -17,6 +17,12 @@ const referenceItem = z.object({
   value: z.string().max(1000).default(''),
 })
 
+const attraction = z.object({
+  description: z.string().max(300).default(''),
+  time: z.string().max(10).default(''),
+  duration: z.string().max(60).default(''),
+})
+
 // Schema completo (todos os campos), usado de forma tolerante no /save
 // e estrito no /submit.
 export const briefingDataSchema = z.object({
@@ -46,6 +52,7 @@ export const briefingDataSchema = z.object({
   do_not_play: z.array(z.string().max(300)).max(30).default([]),
   references: z.array(referenceItem).max(15).default([]),
   signature_song: z.string().max(300).default(''),
+  other_attractions: z.array(attraction).max(10).default([]),
 
   moments: z.record(z.string(), momentValue).default({}),
   other_moments: z.string().max(1500).default(''),

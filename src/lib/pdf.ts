@@ -164,6 +164,12 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     data.references.filter((r) => r.value.trim()).map((r) => `${labelOf(REFERENCE_TYPE_OPTIONS, r.type)}: ${r.value}`),
   )
   kv('Música-assinatura', data.signature_song)
+  bullets(
+    'Outras atrações musicais',
+    data.other_attractions
+      .filter((a) => a.description.trim())
+      .map((a) => `${a.description}${[a.time, a.duration].filter(Boolean).length ? ` (${[a.time, a.duration].filter(Boolean).join(', ')})` : ''}`),
+  )
 
   // ── Momentos especiais ──
   const momentDefs = momentsFor(data.event_type).filter((def) => data.moments[def.id]?.enabled)

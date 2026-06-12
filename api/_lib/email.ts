@@ -144,7 +144,17 @@ export function buildEmailHtml(data: BriefingData): string {
           .join('')}</ul>`
       : ''
 
-  const musica = section('Direção musical', topGenres + vetados + mustPlayHtml + doNotPlayHtml + refsHtml + kv('Música-assinatura', esc(data.signature_song)))
+  const attractions = data.other_attractions.filter((a) => a.description.trim())
+  const attractionsHtml = attractions.length
+    ? `<p style="margin:10px 0 4px;font-size:14px;color:${MUTED};font-weight:600;">Outras atrações musicais:</p><ul style="margin:0 0 10px;padding-left:20px;color:${TEXT};font-size:14px;">${attractions
+        .map((a) => `<li>${esc(a.description)}${[a.time, a.duration].filter(Boolean).length ? ` (${[a.time, a.duration].filter(Boolean).map(esc).join(', ')})` : ''}</li>`)
+        .join('')}</ul>`
+    : ''
+
+  const musica = section(
+    'Direção musical',
+    topGenres + vetados + mustPlayHtml + doNotPlayHtml + refsHtml + kv('Música-assinatura', esc(data.signature_song)) + attractionsHtml,
+  )
 
   const momentRows = momentDefs
     .filter((def) => data.moments?.[def.id]?.enabled)

@@ -133,6 +133,25 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
           }
         />
         <Row label="Música-assinatura" value={data.signature_song} />
+        <Row
+          label="Outras atrações"
+          value={
+            data.other_attractions.filter((a) => a.description.trim()).length ? (
+              <ul className="list-disc list-inside">
+                {data.other_attractions
+                  .filter((a) => a.description.trim())
+                  .map((a, i) => (
+                    <li key={i}>
+                      {a.description}
+                      {[a.time, a.duration].filter(Boolean).length ? ` (${[a.time, a.duration].filter(Boolean).join(', ')})` : ''}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              ''
+            )
+          }
+        />
       </Section>
 
       <Section title="Momentos especiais" block={5} onEdit={onEditBlock}>
