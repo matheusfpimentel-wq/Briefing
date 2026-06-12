@@ -23,7 +23,13 @@ async function postJson(path: string, body: unknown): Promise<ApiResult> {
   }
 
   if (!res.ok || payload.ok === false) {
-    return { ok: false, error: payload.error || 'Não foi possível concluir agora. Tente novamente.' }
+    const fallback =
+      res.status === 404
+        ? 'Erro 404: as funções da API não foram encontradas (verifique o deploy na Vercel).'
+        : res.status >= 500
+          ? `Erro ${res.status}: o servidor falhou (confira as variáveis de ambiente e os logs na Vercel).`
+          : `Não foi possível concluir agora (erro ${res.status}). Tente novamente.`
+    return { ok: false, error: payload.error || fallback }
   }
   return { ok: true }
 }
