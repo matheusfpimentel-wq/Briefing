@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { getClientIp, rateLimit } from './_lib/rateLimit'
-import { saveSchema } from './_lib/schema'
-import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase'
+import { getClientIp, rateLimit } from './_lib/rateLimit.js'
+import { saveSchema } from './_lib/schema.js'
+import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

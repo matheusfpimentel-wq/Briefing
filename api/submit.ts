@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { sendBriefingEmail } from './_lib/email'
-import { getClientIp, rateLimit } from './_lib/rateLimit'
-import { submitSchema } from './_lib/schema'
-import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase'
+import { sendBriefingEmail } from './_lib/email.js'
+import { getClientIp, rateLimit } from './_lib/rateLimit.js'
+import { submitSchema } from './_lib/schema.js'
+import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

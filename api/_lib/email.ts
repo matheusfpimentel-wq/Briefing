@@ -1,4 +1,4 @@
-import type { BriefingData } from './schema'
+import type { BriefingData } from './schema.js'
 import {
   AGE_RANGE,
   ENERGY_PHASES_CORPORATE,
@@ -11,7 +11,7 @@ import {
   ROLE,
   SOUND_STRUCTURE,
   lbl,
-} from './labels'
+} from './labels.js'
 
 const ACCENT = '#8b5cf6'
 const BG = '#0f0f17'
