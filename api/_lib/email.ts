@@ -197,7 +197,17 @@ export function buildEmailHtml(data: BriefingData): string {
 </body></html>`
 }
 
-export async function sendBriefingEmail(data: BriefingData): Promise<void> {
+function pdfFilename(data: BriefingData): string {
+  const slug = (data.respondent_name || 'briefing')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+  return `briefing-${slug || 'mazik'}${data.event_date ? `-${data.event_date}` : ''}.pdf`
+}
+
+export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
   const to = process.env.NOTIFY_EMAIL
   const from = process.env.RESEND_FROM || 'onboarding@resend.dev'
@@ -209,12 +219,17 @@ export async function sendBriefingEmail(data: BriefingData): Promise<void> {
   const resend = new Resend(apiKey)
   const subject = `🎧 Novo briefing: ${lbl(EVENT_TYPE, data.event_type)} de ${data.respondent_name} — ${data.event_date || 'data a definir'}`
 
+  const attachments = pdfBase64
+    ? [{ filename: pdfFilename(data), content: Buffer.from(pdfBase64, 'base64') }]
+    : undefined
+
   const { error } = await resend.emails.send({
     from,
     to,
     subject,
     html: buildEmailHtml(data),
     replyTo: data.email || undefined,
+    attachments,
   })
 
   if (error) {

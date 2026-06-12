@@ -16,12 +16,20 @@ export default function App() {
   const handleSubmit = async () => {
     setSubmitError(undefined)
     setSubmitting(true)
-    const result = await submitBriefing(form.id, form.data)
+    // PDF gerado no navegador: vai anexado no e-mail e fica disponível para download.
+    let pdf: string | undefined
+    try {
+      const { briefingPdfBase64 } = await import('./lib/pdf')
+      pdf = briefingPdfBase64(form.data)
+    } catch {
+      pdf = undefined // se o PDF falhar, o envio continua normalmente
+    }
+    const result = await submitBriefing(form.id, form.data, pdf)
     setSubmitting(false)
     if (result.ok) {
-      const name = form.data.respondent_name
+      const data = form.data
       form.reset()
-      navigate('/obrigado', { state: { name } })
+      navigate('/obrigado', { state: { name: data.respondent_name, data } })
     } else {
       setSubmitError(result.error || 'Não consegui enviar agora. Tente novamente em instantes.')
     }

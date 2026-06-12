@@ -66,6 +66,8 @@ export const saveSchema = z.object({
 // /submit — exige os campos essenciais
 export const submitSchema = z.object({
   id: uuid,
+  // PDF do briefing em base64 (gerado no navegador), anexado no e-mail.
+  pdf: z.string().max(8_000_000).optional(),
   data: briefingDataSchema.superRefine((d, ctx) => {
     if (!d.respondent_name.trim()) ctx.addIssue({ code: 'custom', path: ['respondent_name'], message: 'Nome é obrigatório' })
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) ctx.addIssue({ code: 'custom', path: ['email'], message: 'E-mail inválido' })

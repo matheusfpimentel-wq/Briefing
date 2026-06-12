@@ -38,11 +38,11 @@ export async function saveBriefing(id: string, data: BriefingData, currentStep: 
 }
 
 /** Envio final (status completed). Tenta novamente em caso de falha de rede. */
-export async function submitBriefing(id: string, data: BriefingData, retries = 2): Promise<ApiResult> {
+export async function submitBriefing(id: string, data: BriefingData, pdf?: string, retries = 2): Promise<ApiResult> {
   let last: ApiResult = { ok: false, error: 'Falha desconhecida' }
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const result = await postJson('/api/submit', { id, data })
+      const result = await postJson('/api/submit', { id, data, pdf })
       if (result.ok) return result
       last = result
       // Erros de validação (4xx) não devem ser repetidos cegamente,

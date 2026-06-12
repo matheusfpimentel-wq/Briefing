@@ -136,6 +136,14 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
       <button type="button" onClick={onSubmit} disabled={submitting} className="btn-primary w-full text-lg py-4">
         {submitting ? 'Enviando…' : 'Enviar briefing 🎧'}
       </button>
+
+      <button
+        type="button"
+        onClick={async () => (await import('@/lib/pdf')).downloadBriefingPdf(data)}
+        className="btn-ghost w-full"
+      >
+        ⬇️ Baixar PDF (prévia)
+      </button>
     </div>
   )
 }

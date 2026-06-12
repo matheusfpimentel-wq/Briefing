@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ ok: false, error: first?.message || 'Confira os campos obrigatórios antes de enviar.' })
   }
 
-  const { id, data } = parsed.data
+  const { id, data, pdf } = parsed.data
 
   try {
     const supabase = getSupabase()
@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // E-mail de notificação. Se falhar, o registro já está salvo —
     // avisamos o cliente para tentar de novo (reenvio é idempotente).
     try {
-      await sendBriefingEmail(data)
+      await sendBriefingEmail(data, pdf)
     } catch (mailErr) {
       console.error('[submit] email error', mailErr)
       return res.status(502).json({ ok: false, error: 'Seu briefing foi salvo, mas houve um erro no envio do aviso. Tente novamente.' })
