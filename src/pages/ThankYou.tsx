@@ -21,15 +21,17 @@ export default function ThankYou() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="card max-w-lg w-full p-8 text-center"
       >
-        <div className="text-5xl mb-4" aria-hidden>
-          🎧
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent-500 to-accent2-500 shadow-lg shadow-accent-900/40" aria-hidden>
+          <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-50">
-          {name ? `Valeu, ${name}!` : 'Briefing recebido!'}
+        <h1 className="font-display text-3xl font-bold text-slate-50">
+          {name ? `Recebido, ${name}.` : 'Briefing recebido.'}
         </h1>
         <p className="mt-4 text-slate-300 leading-relaxed">
-          Briefing recebido! Agora começa a curadoria do seu evento. Vou montar um set com a sua cara.
-          Qualquer ajuste, me chama no WhatsApp. 💜
+          Agora começa a curadoria do seu evento. Vou montar um set com a sua cara e a vibe que você
+          descreveu. Qualquer ajuste, é só me chamar no WhatsApp.
         </p>
 
         {data && (
@@ -38,7 +40,7 @@ export default function ThankYou() {
             onClick={async () => (await import('@/lib/pdf')).downloadBriefingPdf(data)}
             className="btn-primary mt-8 w-full"
           >
-            ⬇️ Baixar uma cópia em PDF
+            Baixar uma cópia em PDF
           </button>
         )}
 

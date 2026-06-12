@@ -53,7 +53,6 @@ export interface StepDef {
   validate?: (data: BriefingData) => Record<string, string>
 }
 
-export const MAX_VETOED_GENRES = 3
 export const MAX_MUST_PLAY = 10
 
 export const STEPS: StepDef[] = [
@@ -135,7 +134,7 @@ export const STEPS: StepDef[] = [
     block: 4,
     blockLabel: 'Música',
     title: 'Tem alguma vibe que NÃO combina?',
-    subtitle: `Até ${MAX_VETOED_GENRES}. O que você escolheu acima não aparece aqui.`,
+    subtitle: 'Quantas quiser. O que você escolheu antes não aparece aqui.',
     custom: 'vetoed',
   },
   {

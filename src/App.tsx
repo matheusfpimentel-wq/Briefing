@@ -48,11 +48,14 @@ export default function App() {
       {/* Cabeçalho fixo com progresso */}
       <header className="sticky top-0 z-10 bg-ink-900/80 backdrop-blur border-b border-ink-700">
         <div className="mx-auto max-w-2xl px-5 pt-4 pb-3">
-          <div className="flex items-center gap-2 mb-3">
-            <span aria-hidden className="text-accent-400 text-xl">🎧</span>
-            <span className="font-display font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent2-400">
-              Briefing Mazik
-            </span>
+          <div className="flex items-center gap-3 mb-3">
+            <span aria-hidden className="h-7 w-7 shrink-0 rotate-12 rounded-lg bg-gradient-to-br from-accent-500 to-accent2-500 shadow-lg shadow-accent-900/40" />
+            <div className="leading-tight">
+              <div className="font-display text-base font-bold tracking-tight text-white">
+                Briefing <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent2-400">Mazik</span>
+              </div>
+              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">Curadoria musical</div>
+            </div>
           </div>
           <ProgressBar
             progress={form.progress}

@@ -102,7 +102,7 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
                   .map((m, i) => (
                     <li key={i}>
                       {m.title_artist}
-                      {m.link ? ' 🔗' : ''}
+                      {m.link ? <span className="text-slate-500"> (com link)</span> : ''}
                     </li>
                   ))}
               </ul>

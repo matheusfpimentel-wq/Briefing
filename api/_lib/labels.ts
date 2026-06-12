@@ -53,11 +53,7 @@ export const OPTIONAL_SERVICES: Record<string, string> = {
   cerimonia: 'Ambientação e acompanhamento durante a cerimônia',
   recepcao: 'Ambientação durante a recepção dos convidados',
   mestre_cerimonias: 'Mestre de cerimônias',
-  iluminacao: 'Iluminação cênica',
-  efeitos: 'Efeitos (máquina de fumaça, laser, gelo seco)',
   performance: 'Performance ao vivo (sax, percussão, vocal)',
-  som_extra: 'Estrutura de som extra para público grande',
-  telao: 'Telão / painel de LED',
 }
 
 export const REFERENCE_TYPE: Record<string, string> = {
@@ -78,17 +74,18 @@ export const ACKNOWLEDGEMENTS: Record<string, string> = {
 
 export const MOMENTS: Record<string, { id: string; label: string }[]> = {
   casamento: [
-    { id: 'entrada_noivos', label: 'Entrada dos noivos' },
+    { id: 'entrada_noivos', label: 'Entrada dos noivos na festa' },
     { id: 'primeira_danca', label: 'Primeira dança' },
     { id: 'brinde', label: 'Brinde' },
-    { id: 'buque', label: 'Buquê' },
     { id: 'bolo', label: 'Hora do bolo' },
-    { id: 'saida_noivos', label: 'Saída dos noivos' },
+    { id: 'buque', label: 'Buquê' },
+    { id: 'primeira_pista', label: 'Primeira música da pista' },
+    { id: 'encerramento', label: 'Música de encerramento da festa' },
   ],
   '15anos': [
     { id: 'entrada_debutante', label: 'Entrada da debutante' },
     { id: 'valsa', label: 'Valsa(s)' },
-    { id: 'cerimonia_vela', label: 'Cerimônia da vela' },
+    { id: 'cerimonia_vela', label: 'Cerimônia das velas' },
     { id: 'parabens', label: 'Parabéns' },
   ],
   aniversario: [
@@ -97,7 +94,7 @@ export const MOMENTS: Record<string, { id: string; label: string }[]> = {
     { id: 'brinde', label: 'Brinde' },
   ],
   formatura: [
-    { id: 'entrada_homenageado', label: 'Entrada / recepção do(a) homenageado(a)' },
+    { id: 'entrada_homenageado', label: 'Entrada / recepção do(a) formando(a)' },
     { id: 'parabens', label: 'Parabéns' },
     { id: 'brinde', label: 'Brinde' },
   ],

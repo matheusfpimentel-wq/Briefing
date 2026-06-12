@@ -52,27 +52,29 @@ export const AUDIENCE_VIBE_OPTIONS: Option[] = [
 export const GENRE_SUGGESTIONS: string[] = [
   'Divas do Pop',
   'Pop atual',
-  'Funk Brasileiro',
-  'Funk consciente / 150bpm',
+  'Pop-rock',
+  'Anos 2000 (Pop e R&B)',
+  'Flashback disco / dance',
+  'Funk atual (sem palavrão)',
+  'Funk proibidão',
+  'Funk antigo',
   'Sertanejo universitário',
   'Sertanejo raiz',
   'Pisadinha / piseiro',
+  'Forró',
+  'Axé / Pop Bahia',
+  'Samba e Pagode',
+  'EDM',
   'House / Tech House',
   'Afro House',
-  'Eletrônica mainstage',
-  'Reggaeton / Latin',
-  'Anos 2000 (Pop e R&B)',
-  'Flashback disco / dance',
+  'Reggaeton',
+  'Reggae',
   'Rock clássico',
   'Indie / Alternativo',
   'Rap / Hip-Hop',
   'Trap',
-  'Samba e Pagode',
-  'Forró pé de serra',
-  'Axé / Pop Bahia',
   'MPB',
   'Soul / R&B',
-  'Reggae',
   'Brega / Brega-funk',
 ]
 
@@ -89,11 +91,7 @@ export const OPTIONAL_SERVICES: Option[] = [
   { value: 'cerimonia', label: 'Ambientação e acompanhamento durante a cerimônia' },
   { value: 'recepcao', label: 'Ambientação durante a recepção dos convidados' },
   { value: 'mestre_cerimonias', label: 'Mestre de cerimônias' },
-  { value: 'iluminacao', label: 'Iluminação cênica' },
-  { value: 'efeitos', label: 'Efeitos (máquina de fumaça, laser, gelo seco)' },
   { value: 'performance', label: 'Performance ao vivo (sax, percussão, vocal)' },
-  { value: 'som_extra', label: 'Estrutura de som extra para público grande' },
-  { value: 'telao', label: 'Telão / painel de LED' },
 ]
 
 // Quadro de ciências (declarações que o cliente confirma).
@@ -178,40 +176,151 @@ export function labelOf(options: Option[], value: string): string {
 export interface MomentDef {
   id: string
   label: string
+  /** O que é / a tradição por trás do momento. */
+  desc?: string
+  /** Música popular como exemplo (vira o placeholder do campo). */
+  example?: string
   /** Permite mais de uma música (ex.: valsas). */
   multi?: boolean
 }
 
 export const MOMENTS_BY_EVENT: Record<string, MomentDef[]> = {
   casamento: [
-    { id: 'entrada_noivos', label: 'Entrada dos noivos' },
-    { id: 'primeira_danca', label: 'Primeira dança' },
-    { id: 'brinde', label: 'Brinde' },
-    { id: 'buque', label: 'Buquê' },
-    { id: 'bolo', label: 'Hora do bolo' },
-    { id: 'saida_noivos', label: 'Saída dos noivos' },
+    {
+      id: 'entrada_noivos',
+      label: 'Entrada dos noivos na festa',
+      desc: 'A grande entrada do casal na recepção, recebidos com aplausos. Marca o início da festa.',
+      example: 'Ex.: Marry You, Bruno Mars',
+    },
+    {
+      id: 'primeira_danca',
+      label: 'Primeira dança',
+      desc: 'A primeira dança do casal já casados, geralmente um momento mais intimista.',
+      example: 'Ex.: Thinking Out Loud, Ed Sheeran',
+    },
+    {
+      id: 'brinde',
+      label: 'Brinde',
+      desc: 'O erguer das taças, normalmente após os discursos dos padrinhos ou familiares.',
+      example: 'Ex.: Celebration, Kool & The Gang',
+    },
+    {
+      id: 'bolo',
+      label: 'Hora do bolo',
+      desc: 'O corte do bolo pelo casal, um clássico para as fotos.',
+      example: 'Ex.: Sugar, Maroon 5',
+    },
+    {
+      id: 'buque',
+      label: 'Buquê',
+      desc: 'O arremesso do buquê para as convidadas solteiras. Costuma ser descontraído.',
+      example: 'Ex.: Single Ladies, Beyoncé',
+    },
+    {
+      id: 'primeira_pista',
+      label: 'Primeira música da pista',
+      desc: 'A faixa que abre oficialmente a pista de dança e puxa todo mundo.',
+      example: 'Ex.: I Wanna Dance with Somebody, Whitney Houston',
+    },
+    {
+      id: 'encerramento',
+      label: 'Música de encerramento da festa',
+      desc: 'A última música, para fechar a noite com chave de ouro.',
+      example: 'Ex.: Time of My Life, Bill Medley e Jennifer Warnes',
+    },
   ],
   '15anos': [
-    { id: 'entrada_debutante', label: 'Entrada da debutante' },
-    { id: 'valsa', label: 'Valsa(s)', multi: true },
-    { id: 'cerimonia_vela', label: 'Cerimônia da vela' },
-    { id: 'parabens', label: 'Parabéns' },
+    {
+      id: 'entrada_debutante',
+      label: 'Entrada da debutante',
+      desc: 'A grande entrada da aniversariante, momento de abertura e emoção.',
+      example: 'Ex.: A Thousand Years, Christina Perri',
+    },
+    {
+      id: 'valsa',
+      label: 'Valsa(s)',
+      desc: 'A valsa tradicional, dançada com o pai, familiares e o par. Pode ter mais de uma.',
+      example: 'Ex.: Valsa das Flores, Tchaikovsky',
+      multi: true,
+    },
+    {
+      id: 'cerimonia_vela',
+      label: 'Cerimônia das velas',
+      desc: 'A tradição das 15 velas, cada uma dedicada a alguém especial na vida da debutante.',
+      example: 'Ex.: Photograph, Ed Sheeran',
+    },
+    {
+      id: 'parabens',
+      label: 'Parabéns',
+      desc: 'O parabéns e o bolo, com a galera reunida.',
+      example: 'Ex.: Festa, Ivete Sangalo',
+    },
   ],
   aniversario: [
-    { id: 'entrada_homenageado', label: 'Entrada / recepção do(a) homenageado(a)' },
-    { id: 'parabens', label: 'Parabéns' },
-    { id: 'brinde', label: 'Brinde' },
+    {
+      id: 'entrada_homenageado',
+      label: 'Entrada / recepção do(a) homenageado(a)',
+      desc: 'A chegada do aniversariante, recebido pelos convidados.',
+      example: 'Ex.: Celebration, Kool & The Gang',
+    },
+    {
+      id: 'parabens',
+      label: 'Parabéns',
+      desc: 'O momento do parabéns e do bolo.',
+      example: 'Ex.: Parabéns tradicional emendado em uma festa animada',
+    },
+    {
+      id: 'brinde',
+      label: 'Brinde',
+      desc: 'O brinde de celebração entre os convidados.',
+      example: 'Ex.: Good Life, OneRepublic',
+    },
   ],
   formatura: [
-    { id: 'entrada_homenageado', label: 'Entrada / recepção do(a) homenageado(a)' },
-    { id: 'parabens', label: 'Parabéns' },
-    { id: 'brinde', label: 'Brinde' },
+    {
+      id: 'entrada_homenageado',
+      label: 'Entrada / recepção do(a) formando(a)',
+      desc: 'A entrada do formando ou da turma, momento de orgulho.',
+      example: 'Ex.: Time of Our Lives, Pitbull e Ne-Yo',
+    },
+    {
+      id: 'parabens',
+      label: 'Parabéns',
+      desc: 'A celebração da conquista, com bolo ou brinde.',
+      example: 'Ex.: We Are the Champions, Queen',
+    },
+    {
+      id: 'brinde',
+      label: 'Brinde',
+      desc: 'O brinde à nova fase.',
+      example: 'Ex.: Good Life, OneRepublic',
+    },
   ],
   corporativo: [
-    { id: 'fundo_falas', label: 'Música de fundo para falas de autoridades' },
-    { id: 'premiacoes', label: 'Premiações' },
-    { id: 'sorteios', label: 'Sorteios' },
-    { id: 'brinde', label: 'Brinde' },
+    {
+      id: 'fundo_falas',
+      label: 'Música de fundo para falas',
+      desc: 'Trilha suave e discreta durante discursos e falas de autoridades.',
+      example: 'Ex.: algo instrumental e elegante, sem vocal',
+    },
+    {
+      id: 'premiacoes',
+      label: 'Premiações',
+      desc: 'A entrada e entrega de prêmios, com clima de reconhecimento.',
+      example: 'Ex.: Eye of the Tiger, Survivor',
+    },
+    {
+      id: 'sorteios',
+      label: 'Sorteios',
+      desc: 'O momento de expectativa e diversão dos sorteios.',
+      example: 'Ex.: The Final Countdown, Europe',
+    },
+    {
+      id: 'brinde',
+      label: 'Brinde',
+      desc: 'O brinde de confraternização da equipe.',
+      example: 'Ex.: Good Life, OneRepublic',
+    },
   ],
   outro: [],
 }
