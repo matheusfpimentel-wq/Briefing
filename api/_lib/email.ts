@@ -1,4 +1,3 @@
-import { Resend } from 'resend'
 import type { BriefingData } from './schema'
 import {
   AGE_RANGE,
@@ -216,6 +215,9 @@ export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string):
     throw new Error('RESEND_API_KEY e NOTIFY_EMAIL precisam estar configuradas.')
   }
 
+  // Import dinâmico: se a lib falhar ao carregar, o erro é capturável
+  // (vira mensagem amigável em vez de derrubar a função).
+  const { Resend } = await import('resend')
   const resend = new Resend(apiKey)
   const subject = `🎧 Novo briefing: ${lbl(EVENT_TYPE, data.event_type)} de ${data.respondent_name} — ${data.event_date || 'data a definir'}`
 

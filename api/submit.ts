@@ -44,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (dbError) {
       console.error('[submit] supabase error', dbError)
-      return res.status(500).json({ ok: false, error: 'Não consegui salvar seu briefing. Tente novamente.' })
+      return res.status(500).json({ ok: false, error: `Banco: ${dbError.message}` })
     }
 
     // E-mail de notificação. Se falhar, o registro já está salvo —
@@ -53,12 +53,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await sendBriefingEmail(data, pdf)
     } catch (mailErr) {
       console.error('[submit] email error', mailErr)
-      return res.status(502).json({ ok: false, error: 'Seu briefing foi salvo, mas houve um erro no envio do aviso. Tente novamente.' })
+      const detail = mailErr instanceof Error ? mailErr.message : String(mailErr)
+      return res.status(502).json({ ok: false, error: `Salvo, mas o e-mail falhou: ${detail}` })
     }
 
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('[submit] error', err)
-    return res.status(500).json({ ok: false, error: 'Erro interno. Tente novamente em instantes.' })
+    const detail = err instanceof Error ? err.message : String(err)
+    return res.status(500).json({ ok: false, error: `Erro interno: ${detail}` })
   }
 }
