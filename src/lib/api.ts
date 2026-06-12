@@ -23,7 +23,13 @@ async function postJson(path: string, body: unknown): Promise<ApiResult> {
   }
 
   if (!res.ok || payload.ok === false) {
-    return { ok: false, error: payload.error || 'Não foi possível concluir agora. Tente novamente.' }
+    const fallback =
+      res.status === 404
+        ? 'Erro 404: as funções da API não foram encontradas (verifique o deploy na Vercel).'
+        : res.status >= 500
+          ? `Erro ${res.status}: o servidor falhou (confira as variáveis de ambiente e os logs na Vercel).`
+          : `Não foi possível concluir agora (erro ${res.status}). Tente novamente.`
+    return { ok: false, error: payload.error || fallback }
   }
   return { ok: true }
 }
@@ -38,11 +44,11 @@ export async function saveBriefing(id: string, data: BriefingData, currentStep: 
 }
 
 /** Envio final (status completed). Tenta novamente em caso de falha de rede. */
-export async function submitBriefing(id: string, data: BriefingData, retries = 2): Promise<ApiResult> {
+export async function submitBriefing(id: string, data: BriefingData, pdf?: string, retries = 2): Promise<ApiResult> {
   let last: ApiResult = { ok: false, error: 'Falha desconhecida' }
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const result = await postJson('/api/submit', { id, data })
+      const result = await postJson('/api/submit', { id, data, pdf })
       if (result.ok) return result
       last = result
       // Erros de validação (4xx) não devem ser repetidos cegamente,

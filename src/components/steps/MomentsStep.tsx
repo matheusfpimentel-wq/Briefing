@@ -40,8 +40,11 @@ export default function MomentsStep({ data, update }: StepProps) {
         const m = getMoment(def.id)
         return (
           <div key={def.id} className="card p-4">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-base font-semibold text-slate-100">{def.label}</span>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <span className="text-base font-semibold text-slate-100">{def.label}</span>
+                {def.desc && <p className="mt-1 text-sm text-slate-400">{def.desc}</p>}
+              </div>
               <button
                 type="button"
                 role="switch"
@@ -70,7 +73,7 @@ export default function MomentsStep({ data, update }: StepProps) {
                     )}
                     <input
                       className="field-input"
-                      placeholder="Qual música? (ex.: Canon in D)"
+                      placeholder={def.example || 'Qual música?'}
                       aria-label={`Música de ${def.label}`}
                       value={song.title_artist}
                       onChange={(e) => setSong(def.id, i, { title_artist: e.target.value })}

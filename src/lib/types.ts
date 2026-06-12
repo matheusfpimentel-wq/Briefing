@@ -14,6 +14,12 @@ export interface MomentValue {
   songs: SongRef[]
 }
 
+/** Referência de clima: a pessoa escolhe o tipo e cola o link/descrição. */
+export interface ReferenceItem {
+  type: string
+  value: string
+}
+
 export interface BriefingData {
   // ── Bloco 1 — Evento e contato ──
   respondent_name: string
@@ -25,36 +31,36 @@ export interface BriefingData {
   start_time: string
   end_time: string
   venue: string
-  guest_count: string
 
   // ── Bloco 2 — Público ──
+  guest_count: string
   age_ranges: string[]
+  audience_vibe: string[]
   audience_description: string
 
   // ── Bloco 3 — Atmosfera por fase (1 a 5) ──
   energy_reception: number
   energy_dinner: number
   energy_dancefloor: number
+  // Curva de inovação (0 = clichê total, 10 = pode inventar moda)
+  innovation: number
 
   // ── Bloco 4 — Música ──
   top_genres: string[]
-  top_genre_other: string
   vetoed_genres: string[]
   must_play: SongRef[]
   do_not_play: string[]
-  reference_playlist: string
+  references: ReferenceItem[]
   signature_song: string
 
   // ── Bloco 5 — Momentos especiais ──
   moments: Record<string, MomentValue>
   other_moments: string
-  has_mc: boolean
-  mc_name: string
-  mc_contact: string
 
   // ── Bloco 6 — Operação ──
   sound_structure: string
-  guest_requests_policy: string
+  optional_services: string[]
+  acknowledgements: string[]
   notes: string
 }
 

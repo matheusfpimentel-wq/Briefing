@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { sendBriefingEmail } from './_lib/email'
-import { getClientIp, rateLimit } from './_lib/rateLimit'
-import { submitSchema } from './_lib/schema'
-import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase'
+import { sendBriefingEmail } from './_lib/email.js'
+import { getClientIp, rateLimit } from './_lib/rateLimit.js'
+import { submitSchema } from './_lib/schema.js'
+import { BRIEFINGS_TABLE, getSupabase } from './_lib/supabase.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ ok: false, error: first?.message || 'Confira os campos obrigatórios antes de enviar.' })
   }
 
-  const { id, data } = parsed.data
+  const { id, data, pdf } = parsed.data
 
   try {
     const supabase = getSupabase()
@@ -44,13 +44,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (dbError) {
       console.error('[submit] supabase error', dbError)
-      return res.status(500).json({ ok: false, error: 'Não consegui salvar seu briefing. Tente novamente.' })
+      return res.status(500).json({ ok: false, error: 'Não consegui salvar seu briefing agora. Tente novamente em instantes.' })
     }
 
     // E-mail de notificação. Se falhar, o registro já está salvo —
     // avisamos o cliente para tentar de novo (reenvio é idempotente).
     try {
-      await sendBriefingEmail(data)
+      await sendBriefingEmail(data, pdf)
     } catch (mailErr) {
       console.error('[submit] email error', mailErr)
       return res.status(502).json({ ok: false, error: 'Seu briefing foi salvo, mas houve um erro no envio do aviso. Tente novamente.' })
@@ -59,6 +59,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.error('[submit] error', err)
-    return res.status(500).json({ ok: false, error: 'Erro interno. Tente novamente em instantes.' })
+    return res.status(500).json({ ok: false, error: 'Tivemos um erro inesperado. Tente novamente em instantes.' })
   }
 }

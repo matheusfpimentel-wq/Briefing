@@ -28,7 +28,7 @@ export default function DoNotPlayStep({ data, update }: StepProps) {
       <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-ink-500">
         + Adicionar proibição
       </button>
-      {items.length === 0 && <p className="text-sm text-slate-500">Sem proibições? Pode seguir em frente. 😉</p>}
+      {items.length === 0 && <p className="text-sm text-slate-500">Sem proibições? Pode seguir em frente.</p>}
     </div>
   )
 }
