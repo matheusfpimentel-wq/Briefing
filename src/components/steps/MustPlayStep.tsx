@@ -33,7 +33,7 @@ export default function MustPlayStep({ data, update }: StepProps) {
           <input
             id={`mp-title-${i}`}
             className="field-input"
-            placeholder="Ex.: Evidências — Chitãozinho & Xororó"
+            placeholder="Ex.: Evidências, Chitãozinho e Xororó"
             value={item.title_artist}
             onChange={(e) => setItem(i, { title_artist: e.target.value })}
           />

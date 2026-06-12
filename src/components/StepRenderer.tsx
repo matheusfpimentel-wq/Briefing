@@ -1,11 +1,14 @@
 import { StepDef } from '@/config/formConfig'
 import type { BriefingData } from '@/lib/types'
 import FieldRenderer from './fields/FieldRenderer'
-import AgeRangesStep from './steps/AgeRangesStep'
+import AcknowledgementsStep from './steps/AcknowledgementsStep'
+import AudienceStep from './steps/AudienceStep'
 import DoNotPlayStep from './steps/DoNotPlayStep'
 import EnergyStep from './steps/EnergyStep'
 import MomentsStep from './steps/MomentsStep'
 import MustPlayStep from './steps/MustPlayStep'
+import ReferencesStep from './steps/ReferencesStep'
+import ServicesStep from './steps/ServicesStep'
 import SummaryStep from './steps/SummaryStep'
 import TopGenresStep from './steps/TopGenresStep'
 import VetoedGenresStep from './steps/VetoedGenresStep'
@@ -26,8 +29,8 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
 
   if (step.custom) {
     switch (step.custom) {
-      case 'ageRanges':
-        return <AgeRangesStep {...stepProps} />
+      case 'audience':
+        return <AudienceStep {...stepProps} />
       case 'energy':
         return <EnergyStep {...stepProps} />
       case 'topGenres':
@@ -38,19 +41,25 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
         return <MustPlayStep {...stepProps} />
       case 'doNotPlay':
         return <DoNotPlayStep {...stepProps} />
+      case 'references':
+        return <ReferencesStep {...stepProps} />
       case 'moments':
         return <MomentsStep {...stepProps} />
+      case 'services':
+        return <ServicesStep {...stepProps} />
+      case 'acknowledgements':
+        return <AcknowledgementsStep {...stepProps} />
       case 'summary':
         return <SummaryStep data={data} onEditBlock={onEditBlock} onSubmit={onSubmit} submitting={submitting} error={submitError} />
     }
   }
 
   // Etapa baseada em campos genéricos
-  const visibleFields = (step.fields ?? []).filter((f) => (f.showWhen ? f.showWhen(data) : true))
+  const fields = step.fields ?? []
   return (
     <div className="space-y-5">
-      {visibleFields.map((field, i) => (
-        <FieldRenderer key={field.name} field={field} data={data} error={errors[field.name]} onChange={update} autoFocus={i === 0 && field.type !== 'toggle'} />
+      {fields.map((field, i) => (
+        <FieldRenderer key={field.name} field={field} data={data} error={errors[field.name]} onChange={update} autoFocus={i === 0} />
       ))}
     </div>
   )

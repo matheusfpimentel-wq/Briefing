@@ -4,38 +4,52 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Acento roxo-violeta da marca
+        // Acento principal roxo-violeta
         accent: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87',
+        },
+        // Acento secundário rosa (energia/club)
+        accent2: {
+          300: '#f9a8d4',
+          400: '#f472b6',
+          500: '#ec4899',
+          600: '#db2777',
         },
         ink: {
-          900: '#0a0a0f',
-          800: '#12121a',
-          700: '#1a1a24',
-          600: '#24242f',
-          500: '#33333f',
+          900: '#0d0b14',
+          800: '#141021',
+          700: '#1c1730',
+          600: '#2a2340',
+          500: '#3a3155',
+          400: '#4f456f',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.4s ease-out',
+        display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
       },
       keyframes: {
+        aurora: {
+          '0%, 100%': { transform: 'translate(-10%, -10%) scale(1)' },
+          '50%': { transform: 'translate(10%, 10%) scale(1.2)' },
+        },
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.4s ease-out',
+        aurora: 'aurora 18s ease-in-out infinite',
       },
     },
   },

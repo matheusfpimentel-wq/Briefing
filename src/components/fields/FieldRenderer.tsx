@@ -44,34 +44,13 @@ export default function FieldRenderer({ field, data, error, onChange, autoFocus 
             value={value as string}
             onChange={(e) => onChange({ [field.name]: e.target.value } as Partial<BriefingData>)}
           >
-            <option value="">Selecione…</option>
+            <option value="">Selecione...</option>
             {field.options?.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
               </option>
             ))}
           </select>
-        )
-
-      case 'toggle':
-        return (
-          <button
-            type="button"
-            role="switch"
-            aria-checked={!!value}
-            id={id}
-            onClick={() => onChange({ [field.name]: !value } as Partial<BriefingData>)}
-            className={`relative inline-flex h-9 w-16 items-center rounded-full transition-colors ${
-              value ? 'bg-accent-600' : 'bg-ink-600'
-            }`}
-          >
-            <span
-              className={`inline-block h-7 w-7 transform rounded-full bg-white shadow transition-transform ${
-                value ? 'translate-x-8' : 'translate-x-1'
-              }`}
-            />
-            <span className="sr-only">{value ? 'Sim' : 'Não'}</span>
-          </button>
         )
 
       case 'tel':
@@ -99,17 +78,6 @@ export default function FieldRenderer({ field, data, error, onChange, autoFocus 
           />
         )
     }
-  }
-
-  if (field.type === 'toggle') {
-    return (
-      <div className="flex items-center justify-between gap-4 rounded-xl bg-ink-700 border border-ink-500 px-4 py-3">
-        <label htmlFor={id} className="text-base font-medium text-slate-200">
-          {field.label}
-        </label>
-        {renderControl()}
-      </div>
-    )
   }
 
   return (

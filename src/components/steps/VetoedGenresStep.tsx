@@ -1,4 +1,4 @@
-import { GENRE_OPTIONS } from '@/config/options'
+import { GENRE_SUGGESTIONS } from '@/config/options'
 import { MAX_VETOED_GENRES } from '@/config/formConfig'
 import { StepProps } from './stepProps'
 
@@ -14,37 +14,31 @@ export default function VetoedGenresStep({ data, update }: StepProps) {
     }
   }
 
-  // Não pode vetar um gênero que está nos top 5
-  const available = GENRE_OPTIONS.filter((o) => o.value !== 'outro' && !data.top_genres.includes(o.value))
+  // Não pode vetar uma vibe que está nos escolhidos.
+  const available = GENRE_SUGGESTIONS.filter((g) => !data.top_genres.some((s) => s.toLowerCase() === g.toLowerCase()))
 
   return (
     <div>
-      <p className="mb-3 text-sm text-slate-400">
-        {full ? `Máximo de ${MAX_VETOED_GENRES} atingido.` : `Pode marcar até ${MAX_VETOED_GENRES}.`}
-      </p>
-      <div className="flex flex-wrap gap-2.5" role="group" aria-label="Gêneros vetados">
-        {available.map((o) => {
-          const on = vetoed.includes(o.value)
+      <p className="mb-3 text-sm text-slate-400">{full ? `Máximo de ${MAX_VETOED_GENRES} atingido.` : `Pode marcar até ${MAX_VETOED_GENRES}.`}</p>
+      <div className="flex flex-wrap gap-2.5" role="group" aria-label="Vibes vetadas">
+        {available.map((g) => {
+          const on = vetoed.includes(g)
           const disabled = !on && full
           return (
             <button
-              key={o.value}
+              key={g}
               type="button"
               aria-pressed={on}
               disabled={disabled}
-              onClick={() => toggle(o.value)}
-              className={`${on ? 'chip-on border-red-500 bg-red-600/20 text-red-200' : 'chip-off'} disabled:opacity-40`}
+              onClick={() => toggle(g)}
+              className={`${on ? 'chip border-red-500 bg-red-600/20 text-red-200' : 'chip-off'} disabled:opacity-40`}
             >
-              {o.label}
+              {g}
             </button>
           )
         })}
       </div>
-      {data.top_genres.length > 0 && (
-        <p className="mt-4 text-xs text-slate-500">
-          Seus top 5 não aparecem aqui — eles nunca serão vetados.
-        </p>
-      )}
+      {data.top_genres.length > 0 && <p className="mt-4 text-xs text-slate-500">As vibes que você escolheu não aparecem aqui, então nunca serão vetadas.</p>}
     </div>
   )
 }

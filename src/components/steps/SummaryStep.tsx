@@ -1,9 +1,11 @@
 import {
+  ACKNOWLEDGEMENTS,
   AGE_RANGE_OPTIONS,
+  AUDIENCE_VIBE_OPTIONS,
   ENERGY_SCALE_LABELS,
   EVENT_TYPE_OPTIONS,
-  GENRE_OPTIONS,
-  GUEST_REQUESTS_OPTIONS,
+  OPTIONAL_SERVICES,
+  REFERENCE_TYPE_OPTIONS,
   ROLE_OPTIONS,
   SOUND_STRUCTURE_OPTIONS,
   energyPhases,
@@ -56,49 +58,53 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
         <Row label="WhatsApp" value={data.whatsapp} />
         <Row label="E-mail" value={data.email} />
         <Row label="Tipo de evento" value={labelOf(EVENT_TYPE_OPTIONS, data.event_type)} />
+        <Row label="Local" value={data.venue} />
         <Row label="Data" value={data.event_date} />
         <Row label="Horário" value={[data.start_time, data.end_time].filter(Boolean).join(' às ')} />
-        <Row label="Local" value={data.venue} />
-        <Row label="Convidados" value={data.guest_count} />
       </Section>
 
       <Section title="Público" block={2} onEdit={onEditBlock}>
+        <Row label="Convidados" value={data.guest_count} />
         <Row label="Faixas etárias" value={data.age_ranges.map((v) => labelOf(AGE_RANGE_OPTIONS, v)).join(', ')} />
+        <Row label="Vibe" value={data.audience_vibe.map((v) => labelOf(AUDIENCE_VIBE_OPTIONS, v)).join(', ')} />
         <Row label="Descrição" value={data.audience_description} />
       </Section>
 
       <Section title="Atmosfera" block={3} onEdit={onEditBlock}>
         {phases.map((p) => (
-          <Row key={p.key} label={p.label} value={`${data[p.key]}/5 — ${ENERGY_SCALE_LABELS[data[p.key] as number]}`} />
+          <Row key={p.key} label={p.label} value={`${data[p.key]}/5 (${ENERGY_SCALE_LABELS[data[p.key] as number]})`} />
         ))}
       </Section>
 
       <Section title="Música" block={4} onEdit={onEditBlock}>
         <Row
-          label="Top 5 gêneros"
+          label="Vibes (em ordem)"
           value={
-            <ol className="list-decimal list-inside">
-              {data.top_genres.map((v) => (
-                <li key={v}>{v === 'outro' && data.top_genre_other ? data.top_genre_other : labelOf(GENRE_OPTIONS, v)}</li>
-              ))}
-            </ol>
+            data.top_genres.length ? (
+              <ol className="list-decimal list-inside">
+                {data.top_genres.map((v) => (
+                  <li key={v}>{v}</li>
+                ))}
+              </ol>
+            ) : (
+              ''
+            )
           }
         />
-        <Row
-          label="Vetados"
-          value={data.vetoed_genres.length ? <span className="text-red-300">{data.vetoed_genres.map((v) => labelOf(GENRE_OPTIONS, v)).join(', ')}</span> : ''}
-        />
+        <Row label="Vetadas" value={data.vetoed_genres.length ? <span className="text-red-300">{data.vetoed_genres.join(', ')}</span> : ''} />
         <Row
           label="Têm que tocar"
           value={
             data.must_play.filter((m) => m.title_artist.trim()).length ? (
               <ul className="list-disc list-inside">
-                {data.must_play.filter((m) => m.title_artist.trim()).map((m, i) => (
-                  <li key={i}>
-                    {m.title_artist}
-                    {m.link ? ' 🔗' : ''}
-                  </li>
-                ))}
+                {data.must_play
+                  .filter((m) => m.title_artist.trim())
+                  .map((m, i) => (
+                    <li key={i}>
+                      {m.title_artist}
+                      {m.link ? ' 🔗' : ''}
+                    </li>
+                  ))}
               </ul>
             ) : (
               ''
@@ -106,7 +112,24 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
           }
         />
         <Row label="Não tocar" value={data.do_not_play.filter((d) => d.trim()).join(', ')} />
-        <Row label="Playlist de referência" value={data.reference_playlist} />
+        <Row
+          label="Referências"
+          value={
+            data.references.filter((r) => r.value.trim()).length ? (
+              <ul className="list-disc list-inside">
+                {data.references
+                  .filter((r) => r.value.trim())
+                  .map((r, i) => (
+                    <li key={i}>
+                      {labelOf(REFERENCE_TYPE_OPTIONS, r.type)}: {r.value}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              ''
+            )
+          }
+        />
         <Row label="Música-assinatura" value={data.signature_song} />
       </Section>
 
@@ -118,12 +141,12 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
             return <Row key={def.id} label={def.label} value={songs.map((s) => s.title_artist).join(' · ') || 'Sim'} />
           })}
         <Row label="Outros momentos" value={data.other_moments} />
-        <Row label="MC / cerimonial" value={data.has_mc ? [data.mc_name, data.mc_contact].filter(Boolean).join(' — ') || 'Sim' : 'Não'} />
       </Section>
 
       <Section title="Operação" block={6} onEdit={onEditBlock}>
         <Row label="Estrutura de som" value={labelOf(SOUND_STRUCTURE_OPTIONS, data.sound_structure)} />
-        <Row label="Política de pedidos" value={labelOf(GUEST_REQUESTS_OPTIONS, data.guest_requests_policy)} />
+        <Row label="Serviços opcionais" value={data.optional_services.map((v) => labelOf(OPTIONAL_SERVICES, v)).join(', ')} />
+        <Row label="Quadro de ciências" value={data.acknowledgements.length === ACKNOWLEDGEMENTS.length ? 'Todos os pontos confirmados ✓' : `${data.acknowledgements.length} de ${ACKNOWLEDGEMENTS.length} confirmados`} />
         <Row label="Observações" value={data.notes} />
       </Section>
 
@@ -134,15 +157,11 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
       )}
 
       <button type="button" onClick={onSubmit} disabled={submitting} className="btn-primary w-full text-lg py-4">
-        {submitting ? 'Enviando…' : 'Enviar briefing 🎧'}
+        {submitting ? 'Enviando...' : 'Enviar briefing'}
       </button>
 
-      <button
-        type="button"
-        onClick={async () => (await import('@/lib/pdf')).downloadBriefingPdf(data)}
-        className="btn-ghost w-full"
-      >
-        ⬇️ Baixar PDF (prévia)
+      <button type="button" onClick={async () => (await import('@/lib/pdf')).downloadBriefingPdf(data)} className="btn-ghost w-full">
+        Baixar PDF (prévia)
       </button>
     </div>
   )

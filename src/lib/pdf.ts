@@ -4,11 +4,13 @@
 
 import { jsPDF } from 'jspdf'
 import {
+  ACKNOWLEDGEMENTS,
   AGE_RANGE_OPTIONS,
+  AUDIENCE_VIBE_OPTIONS,
   ENERGY_SCALE_LABELS,
   EVENT_TYPE_OPTIONS,
-  GENRE_OPTIONS,
-  GUEST_REQUESTS_OPTIONS,
+  OPTIONAL_SERVICES,
+  REFERENCE_TYPE_OPTIONS,
   ROLE_OPTIONS,
   SOUND_STRUCTURE_OPTIONS,
   energyPhases,
@@ -17,10 +19,11 @@ import {
 } from '@/config/options'
 import type { BriefingData } from './types'
 
-const PURPLE: [number, number, number] = [124, 58, 237]
-const DARK: [number, number, number] = [30, 30, 40]
-const MUTED: [number, number, number] = [110, 110, 120]
-const TRACK: [number, number, number] = [232, 232, 238]
+const PURPLE: [number, number, number] = [147, 51, 234]
+const PINK: [number, number, number] = [236, 72, 153]
+const DARK: [number, number, number] = [28, 25, 38]
+const MUTED: [number, number, number] = [120, 113, 138]
+const TRACK: [number, number, number] = [236, 233, 245]
 
 export function buildBriefingPdf(data: BriefingData): jsPDF {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
@@ -40,26 +43,33 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   // ── Cabeçalho ──
   doc.setFillColor(...PURPLE)
   doc.rect(0, 0, pageW, 96, 'F')
+  doc.setFillColor(...PINK)
+  doc.rect(0, 96, pageW, 4, 'F')
   doc.setTextColor(255, 255, 255)
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(20)
-  doc.text('🎧 Briefing Mazik', margin, 46)
+  doc.setFontSize(22)
+  doc.text('BRIEFING MAZIK', margin, 46)
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(12)
-  const subtitle = `${labelOf(EVENT_TYPE_OPTIONS, data.event_type)} de ${data.respondent_name || '—'}`
-  doc.text(subtitle, margin, 70)
-  const dateLine = [data.event_date, [data.start_time, data.end_time].filter(Boolean).join('–')].filter(Boolean).join('  ·  ')
-  if (dateLine) doc.text(dateLine, margin, 86)
+  const subtitle = `${labelOf(EVENT_TYPE_OPTIONS, data.event_type)} de ${data.respondent_name || ''}`.trim()
+  doc.text(subtitle, margin, 68)
+  const dateLine = [data.event_date, [data.start_time, data.end_time].filter(Boolean).join(' a '), data.venue].filter(Boolean).join('   |   ')
+  if (dateLine) {
+    doc.setFontSize(10)
+    doc.text(dateLine, margin, 86)
+  }
   y = 128
 
   const heading = (t: string) => {
-    ensure(46)
+    ensure(48)
+    doc.setFillColor(...PURPLE)
+    doc.rect(margin, y - 9, 4, 14, 'F')
     doc.setTextColor(...PURPLE)
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(12)
-    doc.text(t.toUpperCase(), margin, y)
-    y += 7
-    doc.setDrawColor(...PURPLE)
+    doc.setFontSize(13)
+    doc.text(t.toUpperCase(), margin + 12, y + 2)
+    y += 12
+    doc.setDrawColor(...TRACK)
     doc.setLineWidth(1)
     doc.line(margin, y, margin + contentW, y)
     y += 16
@@ -82,7 +92,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     y += lines.length * 14 + 8
   }
 
-  const bullets = (label: string, items: string[]) => {
+  const bullets = (label: string, items: string[], ordered = false) => {
     const clean = items.filter((i) => i && i.trim())
     if (!clean.length) return
     ensure(24)
@@ -94,11 +104,12 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     doc.setTextColor(...DARK)
-    clean.forEach((item) => {
-      const lines = doc.splitTextToSize(item, contentW - 16)
+    clean.forEach((item, idx) => {
+      const marker = ordered ? `${idx + 1}.` : '•'
+      const lines = doc.splitTextToSize(item, contentW - 18)
       ensure(lines.length * 14)
-      doc.text('•', margin + 2, y)
-      doc.text(lines, margin + 16, y)
+      doc.text(marker, margin + 2, y)
+      doc.text(lines, margin + 18, y)
       y += lines.length * 14 + 2
     })
     y += 8
@@ -109,7 +120,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
     doc.setTextColor(...DARK)
-    doc.text(`${label} — ${value}/5 (${ENERGY_SCALE_LABELS[value]})`, margin, y)
+    doc.text(`${label}: ${value}/5 (${ENERGY_SCALE_LABELS[value]})`, margin, y)
     y += 8
     doc.setFillColor(...TRACK)
     doc.roundedRect(margin, y, contentW, 8, 3, 3, 'F')
@@ -124,11 +135,13 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   kv('WhatsApp', data.whatsapp)
   kv('E-mail', data.email)
   kv('Local', data.venue)
-  kv('Convidados', data.guest_count)
+  kv('Data e horário', [data.event_date, [data.start_time, data.end_time].filter(Boolean).join(' a ')].filter(Boolean).join('  ·  '))
 
   // ── Público ──
   heading('Público')
+  kv('Convidados', data.guest_count)
   kv('Faixas etárias', data.age_ranges.map((v) => labelOf(AGE_RANGE_OPTIONS, v)).join(', '))
+  kv('Vibe', data.audience_vibe.map((v) => labelOf(AUDIENCE_VIBE_OPTIONS, v)).join(', '))
   kv('Descrição', data.audience_description)
 
   // ── Atmosfera ──
@@ -137,17 +150,17 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
 
   // ── Música ──
   heading('Direção musical')
-  bullets(
-    'Top 5 gêneros (em ordem)',
-    data.top_genres.map((v, i) => `${i + 1}. ${v === 'outro' && data.top_genre_other ? data.top_genre_other : labelOf(GENRE_OPTIONS, v)}`),
-  )
-  kv('Gêneros vetados', data.vetoed_genres.map((v) => labelOf(GENRE_OPTIONS, v)).join(', '))
+  bullets('Vibes (em ordem de prioridade)', data.top_genres, true)
+  kv('Vibes vetadas', data.vetoed_genres.join(', '))
   bullets(
     'Têm que tocar',
     data.must_play.filter((m) => m.title_artist.trim()).map((m) => `${m.title_artist}${m.link ? `  (${m.link})` : ''}`),
   )
   bullets('Não tocar', data.do_not_play)
-  kv('Playlist de referência', data.reference_playlist)
+  bullets(
+    'Referências',
+    data.references.filter((r) => r.value.trim()).map((r) => `${labelOf(REFERENCE_TYPE_OPTIONS, r.type)}: ${r.value}`),
+  )
   kv('Música-assinatura', data.signature_song)
 
   // ── Momentos especiais ──
@@ -164,9 +177,17 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   // ── Operação ──
   heading('Operação')
   kv('Estrutura de som', labelOf(SOUND_STRUCTURE_OPTIONS, data.sound_structure))
-  kv('Política de pedidos', labelOf(GUEST_REQUESTS_OPTIONS, data.guest_requests_policy))
-  kv('MC / cerimonial', data.has_mc ? [data.mc_name, data.mc_contact].filter(Boolean).join(' — ') || 'Sim' : 'Não')
+  bullets(
+    'Serviços opcionais desejados',
+    data.optional_services.map((v) => labelOf(OPTIONAL_SERVICES, v)),
+  )
   kv('Observações', data.notes)
+
+  // Quadro de ciências
+  const acked = ACKNOWLEDGEMENTS.filter((a) => data.acknowledgements.includes(a.id))
+  if (acked.length) {
+    bullets(`Quadro de ciências (${acked.length}/${ACKNOWLEDGEMENTS.length} confirmados)`, acked.map((a) => a.text))
+  }
 
   return doc
 }

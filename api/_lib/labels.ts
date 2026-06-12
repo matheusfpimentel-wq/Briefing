@@ -20,29 +20,25 @@ export const EVENT_TYPE: Record<string, string> = {
 
 export const AGE_RANGE: Record<string, string> = {
   ate17: 'Até 17',
-  '18a29': '18–29',
-  '30a45': '30–45',
-  '46a60': '46–60',
+  '18a29': '18 a 29',
+  '30a45': '30 a 45',
+  '46a60': '46 a 60',
   '60mais': '60+',
 }
 
-export const GENRE: Record<string, string> = {
-  funk: 'Funk Brasileiro',
-  pop: 'Pop',
-  anos2000: 'Anos 2000 (Pop, R&B)',
-  reggaeton: 'Reggaeton',
-  eletronica: 'Música Eletrônica (EDM, House)',
-  sertanejo: 'Sertanejo',
-  forro: 'Forró',
-  axe: 'Axé',
-  samba_pagode: 'Samba e Pagode',
-  flashback: 'Flashback (Disco, Dance, New Wave)',
-  rock: 'Rock',
-  rap: 'Rap / Hip-Hop',
-  mpb: 'MPB',
-  soul_funk: 'Soul / Funk',
-  reggae: 'Reggae',
-  outro: 'Outro',
+export const AUDIENCE_VIBE: Record<string, string> = {
+  clubber: 'Clubber',
+  alternativo: 'Alternativo',
+  elegante: 'Elegante / sofisticado',
+  festeiro: 'Festeiro / animado',
+  descolado: 'Descolado / antenado',
+  tradicional: 'Tradicional / família',
+  jovem: 'Jovem',
+  maduro: 'Público mais maduro',
+  ecletico: 'Eclético / misturado',
+  romantico: 'Romântico',
+  descontraido: 'Descontraído / praiano',
+  exigente: 'Exigente com música',
 }
 
 export const SOUND_STRUCTURE: Record<string, string> = {
@@ -52,10 +48,32 @@ export const SOUND_STRUCTURE: Record<string, string> = {
   nao_sei: 'Ainda não sei',
 }
 
-export const GUEST_REQUESTS: Record<string, string> = {
-  livre: 'Aceitar pedidos livremente',
-  combinar: 'Aceitar só o que combinar com o briefing',
-  nao_aceitar: 'Não aceitar pedidos',
+export const OPTIONAL_SERVICES: Record<string, string> = {
+  toca_discos: 'Mixagem em toca-discos (vinil)',
+  cerimonia: 'Ambientação e acompanhamento durante a cerimônia',
+  recepcao: 'Ambientação durante a recepção dos convidados',
+  mestre_cerimonias: 'Mestre de cerimônias',
+  iluminacao: 'Iluminação cênica',
+  efeitos: 'Efeitos (máquina de fumaça, laser, gelo seco)',
+  performance: 'Performance ao vivo (sax, percussão, vocal)',
+  som_extra: 'Estrutura de som extra para público grande',
+  telao: 'Telão / painel de LED',
+}
+
+export const REFERENCE_TYPE: Record<string, string> = {
+  playlist: 'Playlist',
+  visual: 'Referência visual',
+  video: 'Vídeo de referência',
+  outro: 'Outro link',
+}
+
+export const ACKNOWLEDGEMENTS: Record<string, string> = {
+  pedidos: 'O contrato não vincula o pedido de músicas dos convidados durante a festa. Músicas indispensáveis devem ser enviadas em playlist com 48h de antecedência.',
+  horario: 'A execução musical vai até o limite de horário estipulado. Horas extras têm valor adicional, pago antes da continuação.',
+  acesso: 'O contratante é responsável pela liberdade de acesso do DJ e do staff, e por impedimentos legais (alvarás, ECAD, etc.).',
+  energia: 'O contratante providencia ponto de energia estável e área coberta para os equipamentos.',
+  atrasos: 'Atrasos no cronograma do contratante ou de outros fornecedores não estendem o horário de término.',
+  curadoria: 'O repertório é uma curadoria do DJ baseada no briefing, com adaptações conforme a leitura da pista.',
 }
 
 export const MOMENTS: Record<string, { id: string; label: string }[]> = {
@@ -105,11 +123,11 @@ export const ENERGY_PHASES_CORPORATE = [
 ]
 
 export const ENERGY_SCALE: Record<number, string> = {
-  1: 'Ambiente / relaxado',
-  2: 'Tranquilo',
-  3: 'Animado',
-  4: 'Empolgado',
-  5: 'Festa total',
+  1: 'Climão lounge',
+  2: 'Tranquilo e elegante',
+  3: 'Animado, todo mundo conversando',
+  4: 'Empolgado, pé na pista',
+  5: 'Club total, mão pra cima',
 }
 
 export const lbl = (map: Record<string, string>, v: string): string => map[v] || v || '—'

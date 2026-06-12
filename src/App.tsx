@@ -50,7 +50,9 @@ export default function App() {
         <div className="mx-auto max-w-2xl px-5 pt-4 pb-3">
           <div className="flex items-center gap-2 mb-3">
             <span aria-hidden className="text-accent-400 text-xl">🎧</span>
-            <span className="font-extrabold tracking-tight">Briefing Mazik</span>
+            <span className="font-display font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent2-400">
+              Briefing Mazik
+            </span>
           </div>
           <ProgressBar
             progress={form.progress}
