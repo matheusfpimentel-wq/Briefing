@@ -248,6 +248,7 @@ export function createEmptyBriefing(): BriefingData {
     energy_reception: 3,
     energy_dinner: 3,
     energy_dancefloor: 4,
+    innovation: 5,
     top_genres: [],
     vetoed_genres: [],
     must_play: [],

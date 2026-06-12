@@ -167,6 +167,16 @@ export const ENERGY_SCALE_LABELS: Record<number, string> = {
   5: 'Club total, mão pra cima',
 }
 
+// Curva de inovação (0 a 10): o quanto pode fugir do repertório óbvio.
+export function innovationLabel(value: number): string {
+  if (value <= 1) return 'Clichê total'
+  if (value <= 3) return 'Só o que todo mundo conhece'
+  if (value <= 5) return 'Equilíbrio entre conhecido e novo'
+  if (value <= 7) return 'Aberto a novidades'
+  if (value <= 9) return 'Bem aberto a apostas'
+  return 'Pode inventar moda'
+}
+
 // Helpers de label
 export function labelOf(options: Option[], value: string): string {
   return options.find((o) => o.value === value)?.label ?? value

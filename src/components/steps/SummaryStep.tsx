@@ -4,6 +4,7 @@ import {
   AUDIENCE_VIBE_OPTIONS,
   ENERGY_SCALE_LABELS,
   EVENT_TYPE_OPTIONS,
+  innovationLabel,
   OPTIONAL_SERVICES,
   REFERENCE_TYPE_OPTIONS,
   ROLE_OPTIONS,
@@ -74,6 +75,7 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
         {phases.map((p) => (
           <Row key={p.key} label={p.label} value={`${data[p.key]}/5 (${ENERGY_SCALE_LABELS[data[p.key] as number]})`} />
         ))}
+        <Row label="Curva de inovação" value={`${data.innovation}/10 (${innovationLabel(data.innovation)})`} />
       </Section>
 
       <Section title="Música" block={4} onEdit={onEditBlock}>

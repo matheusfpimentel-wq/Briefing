@@ -127,4 +127,13 @@ export const ENERGY_SCALE: Record<number, string> = {
   5: 'Club total, mão pra cima',
 }
 
+export function innovationLabel(value: number): string {
+  if (value <= 1) return 'Clichê total'
+  if (value <= 3) return 'Só o que todo mundo conhece'
+  if (value <= 5) return 'Equilíbrio entre conhecido e novo'
+  if (value <= 7) return 'Aberto a novidades'
+  if (value <= 9) return 'Bem aberto a apostas'
+  return 'Pode inventar moda'
+}
+
 export const lbl = (map: Record<string, string>, v: string): string => map[v] || v || '—'

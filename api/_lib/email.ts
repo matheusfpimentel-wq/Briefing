@@ -12,6 +12,7 @@ import {
   REFERENCE_TYPE,
   ROLE,
   SOUND_STRUCTURE,
+  innovationLabel,
   lbl,
 } from './labels.js'
 
@@ -107,7 +108,8 @@ export function buildEmailHtml(data: BriefingData): string {
       kv('Descrição', esc(data.audience_description)) +
       '<div style="margin-top:14px;">' +
       energyPhases.map((p) => energyBar(p.label, (data as Record<string, unknown>)[p.key] as number)).join('') +
-      '</div>',
+      '</div>' +
+      `<p style="margin:14px 0 0;font-size:14px;color:${TEXT};"><strong style="color:${MUTED};font-weight:600;">Curva de inovação:</strong> ${data.innovation}/10 (${esc(innovationLabel(data.innovation))})</p>`,
   )
 
   const topGenres =

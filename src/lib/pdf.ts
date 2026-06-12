@@ -14,6 +14,7 @@ import {
   ROLE_OPTIONS,
   SOUND_STRUCTURE_OPTIONS,
   energyPhases,
+  innovationLabel,
   labelOf,
   momentsFor,
 } from '@/config/options'
@@ -147,6 +148,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   // ── Atmosfera ──
   heading('Atmosfera por fase')
   energyPhases(data.event_type).forEach((p) => energyBar(p.label, data[p.key] as number))
+  kv('Curva de inovação', `${data.innovation}/10 (${innovationLabel(data.innovation)})`)
 
   // ── Música ──
   heading('Direção musical')

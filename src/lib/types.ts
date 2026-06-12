@@ -42,6 +42,8 @@ export interface BriefingData {
   energy_reception: number
   energy_dinner: number
   energy_dancefloor: number
+  // Curva de inovação (0 = clichê total, 10 = pode inventar moda)
+  innovation: number
 
   // ── Bloco 4 — Música ──
   top_genres: string[]

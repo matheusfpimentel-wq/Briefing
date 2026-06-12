@@ -38,6 +38,7 @@ export const briefingDataSchema = z.object({
   energy_reception: z.number().int().min(1).max(5).default(3),
   energy_dinner: z.number().int().min(1).max(5).default(3),
   energy_dancefloor: z.number().int().min(1).max(5).default(4),
+  innovation: z.number().int().min(0).max(10).default(5),
 
   top_genres: z.array(z.string().max(60)).max(30).default([]),
   vetoed_genres: z.array(z.string().max(60)).max(10).default([]),
