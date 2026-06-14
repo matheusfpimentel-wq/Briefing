@@ -1,5 +1,6 @@
 import { momentsFor } from '@/config/options'
 import type { MomentValue, SongRef } from '@/lib/types'
+import InfoHint from '../InfoHint'
 import { StepProps } from './stepProps'
 
 const EMPTY_SONG: SongRef = { title_artist: '', link: '' }
@@ -41,10 +42,10 @@ export default function MomentsStep({ data, update }: StepProps) {
         return (
           <div key={def.id} className="card p-4">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
+              <span className="flex items-center gap-2">
                 <span className="text-base font-semibold text-slate-100">{def.label}</span>
-                {def.desc && <p className="mt-1 text-sm text-slate-400">{def.desc}</p>}
-              </div>
+                {def.desc && <InfoHint text={def.desc} label={def.label} />}
+              </span>
               <button
                 type="button"
                 role="switch"

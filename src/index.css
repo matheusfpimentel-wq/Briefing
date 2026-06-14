@@ -94,4 +94,45 @@
   .card {
     @apply rounded-2xl border border-ink-600 bg-ink-800/70 backdrop-blur;
   }
+
+  /* Slider com área de toque generosa — arrasta de primeira no celular */
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 40px;
+    background: transparent;
+    cursor: pointer;
+    /* permite rolar a página na vertical e arrastar o slider na horizontal */
+    touch-action: pan-y;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 9999px;
+    background: theme('colors.ink.600');
+  }
+  .range::-moz-range-track {
+    height: 8px;
+    border-radius: 9999px;
+    background: theme('colors.ink.600');
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 28px;
+    width: 28px;
+    margin-top: -10px;
+    border-radius: 9999px;
+    border: 3px solid #fff;
+    background-image: linear-gradient(135deg, theme('colors.accent.500'), theme('colors.accent2.500'));
+    box-shadow: 0 4px 12px -2px rgba(168, 85, 247, 0.6);
+  }
+  .range::-moz-range-thumb {
+    height: 28px;
+    width: 28px;
+    border-radius: 9999px;
+    border: 3px solid #fff;
+    background-image: linear-gradient(135deg, theme('colors.accent.500'), theme('colors.accent2.500'));
+    box-shadow: 0 4px 12px -2px rgba(168, 85, 247, 0.6);
+  }
 }

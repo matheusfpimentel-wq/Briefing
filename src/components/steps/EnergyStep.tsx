@@ -1,4 +1,5 @@
 import { ENERGY_SCALE_LABELS, energyPhases, innovationLabel } from '@/config/options'
+import InfoHint from '../InfoHint'
 import { StepProps } from './stepProps'
 
 export default function EnergyStep({ data, update }: StepProps) {
@@ -10,13 +11,15 @@ export default function EnergyStep({ data, update }: StepProps) {
         const value = data[phase.key] as number
         return (
           <div key={phase.key}>
-            <div className="flex items-baseline justify-between mb-1">
-              <label htmlFor={phase.key} className="text-base font-semibold text-slate-100">
-                {phase.label}
-              </label>
+            <div className="flex items-baseline justify-between mb-2 gap-3">
+              <span className="flex items-center gap-2">
+                <label htmlFor={phase.key} className="text-base font-semibold text-slate-100">
+                  {phase.label}
+                </label>
+                {phase.hint && <InfoHint text={phase.hint} label={phase.label} />}
+              </span>
               <span className="text-sm font-bold text-accent-300">{ENERGY_SCALE_LABELS[value]}</span>
             </div>
-            <p className="mb-3 text-xs text-slate-500">{phase.hint}</p>
             <input
               id={phase.key}
               type="range"
@@ -25,7 +28,7 @@ export default function EnergyStep({ data, update }: StepProps) {
               step={1}
               value={value}
               onChange={(e) => update({ [phase.key]: Number(e.target.value) })}
-              className="w-full accent-accent-500 cursor-pointer"
+              className="range"
               aria-valuetext={ENERGY_SCALE_LABELS[value]}
             />
             <div className="mt-1 flex justify-between text-xs text-slate-600">
@@ -38,13 +41,18 @@ export default function EnergyStep({ data, update }: StepProps) {
 
       {/* Curva de inovação */}
       <div className="border-t border-ink-600 pt-7">
-        <div className="flex items-baseline justify-between mb-1">
-          <label htmlFor="innovation" className="text-base font-semibold text-slate-100">
-            Curva de inovação
-          </label>
+        <div className="flex items-baseline justify-between mb-2 gap-3">
+          <span className="flex items-center gap-2">
+            <label htmlFor="innovation" className="text-base font-semibold text-slate-100">
+              Curva de inovação
+            </label>
+            <InfoHint
+              text="O quanto eu posso fugir do repertório óbvio e apostar em coisas além do que todo mundo já conhece."
+              label="Curva de inovação"
+            />
+          </span>
           <span className="text-sm font-bold text-accent-300">{innovationLabel(data.innovation)}</span>
         </div>
-        <p className="mb-3 text-xs text-slate-500">O quanto eu posso fugir do repertório óbvio e apostar em coisas além do que todo mundo já conhece.</p>
         <input
           id="innovation"
           type="range"
@@ -53,7 +61,7 @@ export default function EnergyStep({ data, update }: StepProps) {
           step={1}
           value={data.innovation}
           onChange={(e) => update({ innovation: Number(e.target.value) })}
-          className="w-full accent-accent2-500 cursor-pointer"
+          className="range"
           aria-valuetext={innovationLabel(data.innovation)}
         />
         <div className="mt-1 flex justify-between text-xs text-slate-600">
