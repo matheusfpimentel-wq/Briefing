@@ -15,8 +15,8 @@ export default function CustomMomentsStep({ data, update }: StepProps) {
       {items.map((item, i) => (
         <div key={i} className="card p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-accent-300">Momento {i + 1}</span>
-            <button type="button" onClick={() => remove(i)} className="text-sm text-red-400 hover:underline">
+            <span className="text-sm font-medium text-accent-600">Momento {i + 1}</span>
+            <button type="button" onClick={() => remove(i)} className="text-sm text-red-600 hover:underline">
               Remover
             </button>
           </div>
@@ -61,7 +61,7 @@ export default function CustomMomentsStep({ data, update }: StepProps) {
         </div>
       ))}
 
-      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-ink-500">
+      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-slate-300">
         + Adicionar momento
       </button>
 

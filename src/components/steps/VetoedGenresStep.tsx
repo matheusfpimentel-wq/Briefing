@@ -32,7 +32,7 @@ export default function VetoedGenresStep({ data, update }: StepProps) {
               key={v}
               type="button"
               onClick={() => remove(v)}
-              className="chip border-red-500 bg-red-600/20 text-red-200"
+              className="chip border-red-500 bg-red-500/10 text-red-700"
               aria-label={`Remover veto ${v}`}
             >
               {v} <span aria-hidden>✕</span>

@@ -84,7 +84,7 @@ export default function FieldRenderer({ field, data, error, onChange, autoFocus 
     <div>
       <label htmlFor={id} className="field-label">
         {field.label}
-        {field.required && <span className="text-accent-300"> *</span>}
+        {field.required && <span className="text-accent-600"> *</span>}
       </label>
       {renderControl()}
       {field.help && !error && (

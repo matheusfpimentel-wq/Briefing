@@ -47,7 +47,7 @@ export default function MomentsStep({ data, update }: StepProps) {
           <div key={def.id} className="card p-4">
             <div className="flex items-start justify-between gap-4">
               <span className="flex items-center gap-2">
-                <span className="text-base font-semibold text-slate-100">{def.label}</span>
+                <span className="text-base font-semibold text-slate-900">{def.label}</span>
                 {def.desc && <InfoHint text={def.desc} label={def.label} />}
               </span>
               <button
@@ -57,7 +57,7 @@ export default function MomentsStep({ data, update }: StepProps) {
                 aria-label={`${def.label}: vai acontecer?`}
                 onClick={() => toggle(def.id)}
                 className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors ${
-                  m.enabled ? 'bg-accent-600' : 'bg-ink-600'
+                  m.enabled ? 'bg-accent-600' : 'bg-slate-200'
                 }`}
               >
                 <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${m.enabled ? 'translate-x-7' : 'translate-x-1'}`} />
@@ -79,11 +79,11 @@ export default function MomentsStep({ data, update }: StepProps) {
                   />
                 </div>
                 {m.songs.map((song, i) => (
-                  <div key={i} className="space-y-2 rounded-lg bg-ink-700/60 p-3">
+                  <div key={i} className="space-y-2 rounded-lg bg-white/60 p-3">
                     {def.multi && m.songs.length > 1 && (
-                      <div className="flex justify-between text-xs text-slate-400">
+                      <div className="flex justify-between text-xs text-slate-500">
                         <span>Música {i + 1}</span>
-                        <button type="button" onClick={() => removeSong(def.id, i)} className="text-red-400 hover:underline">
+                        <button type="button" onClick={() => removeSong(def.id, i)} className="text-red-600 hover:underline">
                           Remover
                         </button>
                       </div>
@@ -106,7 +106,7 @@ export default function MomentsStep({ data, update }: StepProps) {
                   </div>
                 ))}
                 {def.multi && (
-                  <button type="button" onClick={() => addSong(def.id)} className="text-sm font-medium text-accent-300 hover:underline">
+                  <button type="button" onClick={() => addSong(def.id)} className="text-sm font-medium text-accent-600 hover:underline">
                     + Adicionar outra música
                   </button>
                 )}

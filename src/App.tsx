@@ -48,13 +48,13 @@ export default function App() {
   return (
     <div className="min-h-[100dvh] flex flex-col">
       {/* Cabeçalho com progresso */}
-      <header className="sticky top-0 z-10 bg-ink-900/70 backdrop-blur border-b border-ink-700/60">
+      <header className="sticky top-0 z-10 bg-white/70 backdrop-blur border-b border-slate-200/60">
         <div className="mx-auto max-w-4xl px-6 pt-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="h-7 w-7 shrink-0 rotate-12 rounded-lg bg-gradient-to-br from-accent-500 to-accent2-500 shadow-lg shadow-accent-900/40" />
             <div className="leading-tight">
-              <div className="font-display text-base font-bold tracking-tight text-white">
-                Briefing <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-300 to-accent2-400">Mazik</span>
+              <div className="font-display text-base font-bold tracking-tight text-slate-900">
+                Briefing <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-600 to-accent2-600">Mazik</span>
               </div>
               <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">Curadoria musical</div>
             </div>
@@ -93,7 +93,7 @@ export default function App() {
 
       {/* Navegação (escondida na tela de resumo, que tem botão próprio) */}
       {!form.isLast && (
-        <footer className="sticky bottom-0 bg-ink-900/70 backdrop-blur border-t border-ink-700/60">
+        <footer className="sticky bottom-0 bg-white/70 backdrop-blur border-t border-slate-200/60">
           <div className="mx-auto max-w-3xl px-6 py-4 flex items-center justify-between gap-4">
             <button type="button" onClick={form.back} disabled={form.isFirst} className="btn-ghost disabled:opacity-0">
               Voltar

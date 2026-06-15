@@ -20,12 +20,12 @@ export default function DoNotPlayStep({ data, update }: StepProps) {
             value={item}
             onChange={(e) => setItem(i, e.target.value)}
           />
-          <button type="button" onClick={() => remove(i)} className="shrink-0 rounded-lg px-3 py-2 text-red-400 hover:bg-ink-700" aria-label={`Remover ${i + 1}`}>
+          <button type="button" onClick={() => remove(i)} className="shrink-0 rounded-lg px-3 py-2 text-red-600 hover:bg-slate-100" aria-label={`Remover ${i + 1}`}>
             ✕
           </button>
         </div>
       ))}
-      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-ink-500">
+      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-slate-300">
         + Adicionar proibição
       </button>
       {items.length === 0 && <p className="text-sm text-slate-500">Sem proibições? Pode seguir em frente.</p>}

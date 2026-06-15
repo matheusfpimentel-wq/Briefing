@@ -26,10 +26,10 @@ export default function ThankYou() {
             <path d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="font-display text-3xl font-bold text-slate-50">
+        <h1 className="font-display text-3xl font-bold text-slate-900">
           {name ? `Recebido, ${name}.` : 'Briefing recebido.'}
         </h1>
-        <p className="mt-4 text-slate-300 leading-relaxed">
+        <p className="mt-4 text-slate-600 leading-relaxed">
           Agora começa a curadoria do seu evento. Vou montar um set com a sua cara e a vibe que você
           descreveu. Qualquer ajuste, é só me chamar no WhatsApp.
         </p>

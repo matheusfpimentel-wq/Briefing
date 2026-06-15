@@ -32,6 +32,11 @@ function esc(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
+function toMinE(t: string): number {
+  const [h, m] = t.split(':').map(Number)
+  return h * 60 + (m || 0)
+}
+
 function waLink(whatsapp: string): string {
   const digits = whatsapp.replace(/\D/g, '')
   const withCountry = digits.startsWith('55') ? digits : `55${digits}`
@@ -93,7 +98,13 @@ function serverRoteiro(data: BriefingData): RItem[] {
     items.push({ key: `attr:${i}`, label: a.description, time: a.time || '', detail: dur ? `Atração · ${dur} min` : 'Atração' })
   })
   const order = data.roteiro_order || []
-  const byTime = (a: RItem, b: RItem) => (a.time && b.time ? a.time.localeCompare(b.time) : a.time ? -1 : b.time ? 1 : 0)
+  const anchor = data.start_time ? toMinE(data.start_time) : 17 * 60
+  const sval = (time: string) => {
+    if (!time) return Number.POSITIVE_INFINITY
+    const t = toMinE(time)
+    return t >= anchor ? t - anchor : t - anchor + 1440
+  }
+  const byTime = (a: RItem, b: RItem) => sval(a.time) - sval(b.time)
   if (order.length) {
     const idx = (k: string) => {
       const i = order.indexOf(k)

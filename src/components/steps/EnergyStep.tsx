@@ -13,12 +13,12 @@ export default function EnergyStep({ data, update }: StepProps) {
           <div key={phase.key}>
             <div className="flex items-baseline justify-between mb-2 gap-3">
               <span className="flex items-center gap-2">
-                <label htmlFor={phase.key} className="text-base font-semibold text-slate-100">
+                <label htmlFor={phase.key} className="text-base font-semibold text-slate-900">
                   {phase.label}
                 </label>
                 {phase.hint && <InfoHint text={phase.hint} label={phase.label} />}
               </span>
-              <span className="text-sm font-bold text-accent-300">{ENERGY_SCALE_LABELS[value]}</span>
+              <span className="text-sm font-bold text-accent-600">{ENERGY_SCALE_LABELS[value]}</span>
             </div>
             <input
               id={phase.key}
@@ -40,10 +40,10 @@ export default function EnergyStep({ data, update }: StepProps) {
       })}
 
       {/* Curva de inovação */}
-      <div className="border-t border-ink-600 pt-7">
+      <div className="border-t border-slate-200 pt-7">
         <div className="flex items-baseline justify-between mb-2 gap-3">
           <span className="flex items-center gap-2">
-            <label htmlFor="innovation" className="text-base font-semibold text-slate-100">
+            <label htmlFor="innovation" className="text-base font-semibold text-slate-900">
               Curva de inovação
             </label>
             <InfoHint
@@ -51,7 +51,7 @@ export default function EnergyStep({ data, update }: StepProps) {
               label="Curva de inovação"
             />
           </span>
-          <span className="text-sm font-bold text-accent-300">{innovationLabel(data.innovation)}</span>
+          <span className="text-sm font-bold text-accent-600">{innovationLabel(data.innovation)}</span>
         </div>
         <input
           id="innovation"

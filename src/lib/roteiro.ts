@@ -24,11 +24,13 @@ export function toTimeStr(min: number): string {
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
 }
 
-/** Minutos desde o início do evento (horários antes do início = dia seguinte). */
+/** Minutos desde o início do evento (horários antes do início = dia seguinte).
+ * Sem horário de início definido, assume um evento noturno (âncora 17h):
+ * assim 00:00 vem depois de 22:00, como é o mais comum. */
 export function sortVal(time: string, startTime: string): number {
   if (!time) return Number.POSITIVE_INFINITY
   const t = toMin(time)
-  const s = startTime ? toMin(startTime) : 0
+  const s = startTime ? toMin(startTime) : 17 * 60
   return t >= s ? t - s : t - s + 1440
 }
 

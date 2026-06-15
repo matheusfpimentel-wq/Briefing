@@ -24,8 +24,8 @@ export default function AttractionsStep({ data, update }: StepProps) {
       {items.map((item, i) => (
         <div key={i} className="card p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-accent-300">Atração {i + 1}</span>
-            <button type="button" onClick={() => remove(i)} className="text-sm text-red-400 hover:underline">
+            <span className="text-sm font-medium text-accent-600">Atração {i + 1}</span>
+            <button type="button" onClick={() => remove(i)} className="text-sm text-red-600 hover:underline">
               Remover
             </button>
           </div>
@@ -65,12 +65,12 @@ export default function AttractionsStep({ data, update }: StepProps) {
               />
             </div>
           </div>
-          {endLabel(item.time, item.duration) && <p className="mt-2 text-xs text-accent-300">{endLabel(item.time, item.duration)}</p>}
+          {endLabel(item.time, item.duration) && <p className="mt-2 text-xs text-accent-600">{endLabel(item.time, item.duration)}</p>}
         </div>
       ))}
 
       {overlaps.length > 0 && (
-        <div className="border border-amber-500/50 bg-amber-500/10 p-4 text-sm text-amber-200" role="alert">
+        <div className="border border-amber-500/50 bg-amber-400/20 p-4 text-sm text-amber-800" role="alert">
           <p className="font-semibold">Atenção: há sobreposição de horários</p>
           <ul className="mt-1 list-disc list-inside">
             {overlaps.map((w, i) => (
@@ -80,7 +80,7 @@ export default function AttractionsStep({ data, update }: StepProps) {
         </div>
       )}
 
-      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-ink-500">
+      <button type="button" onClick={add} className="btn-ghost w-full border border-dashed border-slate-300">
         + Adicionar atração
       </button>
 

@@ -21,7 +21,7 @@ export default function InfoHint({ text, label }: Props) {
         }}
         onBlur={() => setOpen(false)}
         className={`inline-flex h-5 w-5 items-center justify-center rounded-full border text-[11px] font-bold italic transition-colors ${
-          open ? 'border-accent-400 bg-accent-500/20 text-accent-200' : 'border-ink-400 text-slate-400 hover:border-accent-400 hover:text-accent-300'
+          open ? 'border-accent-400 bg-accent-500/20 text-accent-700' : 'border-slate-400 text-slate-500 hover:border-accent-400 hover:text-accent-600'
         }`}
       >
         i
@@ -29,7 +29,7 @@ export default function InfoHint({ text, label }: Props) {
       {open && (
         <span
           role="tooltip"
-          className="absolute left-0 top-7 z-30 w-60 max-w-[75vw] rounded-lg border border-ink-500 bg-ink-800 p-3 text-xs font-normal not-italic leading-relaxed text-slate-300 shadow-xl"
+          className="absolute left-0 top-7 z-30 w-60 max-w-[75vw] rounded-lg border border-slate-300 bg-white p-3 text-xs font-normal not-italic leading-relaxed text-slate-600 shadow-xl"
         >
           {text}
         </span>

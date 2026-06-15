@@ -11,14 +11,14 @@ interface Props {
 export default function ProgressBar({ progress, blockLabel, saving, stepIndex, totalSteps }: Props) {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-2 text-xs text-slate-400">
-        <span className="font-medium uppercase tracking-wide text-accent-300">{blockLabel}</span>
+      <div className="flex items-center justify-between mb-2 text-xs text-slate-500">
+        <span className="font-medium uppercase tracking-wide text-accent-600">{blockLabel}</span>
         <span aria-live="polite">
           {saving ? 'Salvando…' : `Etapa ${stepIndex + 1} de ${totalSteps}`}
         </span>
       </div>
       <div
-        className="h-1.5 w-full overflow-hidden rounded-full bg-ink-600"
+        className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}

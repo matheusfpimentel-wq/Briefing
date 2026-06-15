@@ -33,15 +33,15 @@ export default function TopGenresStep({ data, update }: StepProps) {
           {selected.map((value, i) => (
             <li key={value} className="flex items-center gap-3 rounded-xl bg-accent-600/15 border border-accent-500/50 px-3 py-2.5">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-600 text-sm font-bold text-white">{i + 1}</span>
-              <span className="flex-1 text-slate-100">{value}</span>
+              <span className="flex-1 text-slate-900">{value}</span>
               <div className="flex items-center gap-1">
-                <button type="button" aria-label="Subir" disabled={i === 0} onClick={() => move(i, -1)} className="rounded-lg px-2 py-1 text-slate-300 hover:bg-ink-600 disabled:opacity-30">
+                <button type="button" aria-label="Subir" disabled={i === 0} onClick={() => move(i, -1)} className="rounded-lg px-2 py-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30">
                   ↑
                 </button>
-                <button type="button" aria-label="Descer" disabled={i === selected.length - 1} onClick={() => move(i, 1)} className="rounded-lg px-2 py-1 text-slate-300 hover:bg-ink-600 disabled:opacity-30">
+                <button type="button" aria-label="Descer" disabled={i === selected.length - 1} onClick={() => move(i, 1)} className="rounded-lg px-2 py-1 text-slate-600 hover:bg-slate-100 disabled:opacity-30">
                   ↓
                 </button>
-                <button type="button" aria-label="Remover" onClick={() => remove(value)} className="rounded-lg px-2 py-1 text-red-400 hover:bg-ink-600">
+                <button type="button" aria-label="Remover" onClick={() => remove(value)} className="rounded-lg px-2 py-1 text-red-600 hover:bg-slate-100">
                   ✕
                 </button>
               </div>

@@ -29,7 +29,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5 py-1.5">
       <dt className="text-xs uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className="text-slate-200">{value}</dd>
+      <dd className="text-slate-700">{value}</dd>
     </div>
   )
 }
@@ -38,12 +38,12 @@ function Section({ title, block, onEdit, children }: { title: string; block: num
   return (
     <div className="card p-5">
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold text-accent-200">{title}</h2>
-        <button type="button" onClick={() => onEdit(block)} className="text-sm font-medium text-accent-300 hover:underline">
+        <h2 className="text-lg font-bold text-accent-700">{title}</h2>
+        <button type="button" onClick={() => onEdit(block)} className="text-sm font-medium text-accent-600 hover:underline">
           Editar
         </button>
       </div>
-      <dl className="divide-y divide-ink-600">{children}</dl>
+      <dl className="divide-y divide-slate-200">{children}</dl>
     </div>
   )
 }
@@ -204,7 +204,7 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
       </Section>
 
       {error && (
-        <div className="rounded-xl border border-red-500/50 bg-red-600/10 p-4 text-red-200" role="alert">
+        <div className="rounded-xl border border-red-500/50 bg-red-600/10 p-4 text-red-700" role="alert">
           {error}
         </div>
       )}

@@ -25,7 +25,7 @@ function SortableRow({ itemKey, label, time, detail, onTime }: RowProps) {
       <button
         type="button"
         aria-label={`Arrastar ${label}`}
-        className="shrink-0 cursor-grab touch-none rounded-lg px-2 py-3 text-slate-500 hover:text-accent-300 active:cursor-grabbing"
+        className="shrink-0 cursor-grab touch-none rounded-lg px-2 py-3 text-slate-500 hover:text-accent-600 active:cursor-grabbing"
         {...attributes}
         {...listeners}
       >
@@ -37,14 +37,14 @@ function SortableRow({ itemKey, label, time, detail, onTime }: RowProps) {
       </button>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold text-slate-100">{label}</p>
-        {detail && <p className="truncate text-xs text-slate-400">{detail}</p>}
+        <p className="truncate font-semibold text-slate-900">{label}</p>
+        {detail && <p className="truncate text-xs text-slate-500">{detail}</p>}
       </div>
 
       <input
         type="time"
         aria-label={`Horário de ${label}`}
-        className="w-28 shrink-0 rounded-lg border border-ink-500 bg-ink-700/70 px-2 py-2 text-sm text-slate-100 focus:border-accent-400 focus:ring-2 focus:ring-accent-500/40"
+        className="w-28 shrink-0 rounded-lg border border-slate-300 bg-white/70 px-2 py-2 text-sm text-slate-900 focus:border-accent-400 focus:ring-2 focus:ring-accent-500/40"
         value={time}
         onChange={(e) => onTime(e.target.value)}
       />
@@ -82,13 +82,13 @@ export default function RoteiroStep({ data, update }: StepProps) {
   }
 
   if (!items.length) {
-    return <p className="text-slate-400">Marque momentos especiais ou adicione atrações para montar o roteiro.</p>
+    return <p className="text-slate-500">Marque momentos especiais ou adicione atrações para montar o roteiro.</p>
   }
 
   return (
     <div>
       {overlaps.length > 0 && (
-        <div className="mb-4 border border-amber-500/50 bg-amber-500/10 p-4 text-sm text-amber-200" role="alert">
+        <div className="mb-4 border border-amber-500/50 bg-amber-400/20 p-4 text-sm text-amber-800" role="alert">
           <p className="font-semibold">Atenção: sobreposição de horários</p>
           <ul className="mt-1 list-disc list-inside">
             {overlaps.map((w, i) => (
@@ -98,7 +98,7 @@ export default function RoteiroStep({ data, update }: StepProps) {
         </div>
       )}
       <div className="mb-4 flex justify-end">
-        <button type="button" onClick={() => update({ roteiro_order: sortKeysByTime(data) })} className="text-sm font-medium text-accent-300 hover:underline">
+        <button type="button" onClick={() => update({ roteiro_order: sortKeysByTime(data) })} className="text-sm font-medium text-accent-600 hover:underline">
           Ordenar por horário
         </button>
       </div>
