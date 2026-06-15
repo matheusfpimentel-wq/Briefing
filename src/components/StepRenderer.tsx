@@ -4,6 +4,7 @@ import FieldRenderer from './fields/FieldRenderer'
 import AcknowledgementsStep from './steps/AcknowledgementsStep'
 import AttractionsStep from './steps/AttractionsStep'
 import AudienceStep from './steps/AudienceStep'
+import CustomMomentsStep from './steps/CustomMomentsStep'
 import DoNotPlayStep from './steps/DoNotPlayStep'
 import EnergyStep from './steps/EnergyStep'
 import MomentsStep from './steps/MomentsStep'
@@ -13,6 +14,7 @@ import RoteiroStep from './steps/RoteiroStep'
 import ServicesStep from './steps/ServicesStep'
 import SummaryStep from './steps/SummaryStep'
 import TopGenresStep from './steps/TopGenresStep'
+import VendorsStep from './steps/VendorsStep'
 import VetoedGenresStep from './steps/VetoedGenresStep'
 import WelcomeStep from './steps/WelcomeStep'
 
@@ -54,8 +56,12 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
         return <RoteiroStep {...stepProps} />
       case 'moments':
         return <MomentsStep {...stepProps} />
+      case 'customMoments':
+        return <CustomMomentsStep {...stepProps} />
       case 'services':
         return <ServicesStep {...stepProps} />
+      case 'vendors':
+        return <VendorsStep {...stepProps} />
       case 'acknowledgements':
         return <AcknowledgementsStep {...stepProps} />
       case 'summary':

@@ -19,11 +19,11 @@ export default function AcknowledgementsStep({ data, update, errors }: StepProps
             role="checkbox"
             aria-checked={on}
             onClick={() => toggle(a.id)}
-            className={`flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left transition-colors ${
-              on ? 'border-accent-500 bg-accent-600/15' : 'border-ink-500 bg-ink-700 hover:border-accent-500/50'
+            className={`flex w-full items-start gap-3 border px-4 py-3 text-left transition-colors ${
+              on ? 'border-accent-500 bg-accent-600/15' : 'border-white/15 bg-white/5 hover:border-accent-500/50'
             }`}
           >
-            <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 ${on ? 'border-accent-400 bg-accent-500 text-white' : 'border-ink-400'}`}>
+            <span className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center border-2 ${on ? 'border-accent-400 bg-accent-500 text-white' : 'border-ink-400'}`}>
               {on && '✓'}
             </span>
             <span className="text-sm leading-relaxed text-slate-200">{a.text}</span>

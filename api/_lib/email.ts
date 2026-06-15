@@ -11,7 +11,7 @@ import {
   OPTIONAL_SERVICES,
   REFERENCE_TYPE,
   ROLE,
-  SOUND_STRUCTURE,
+  VENDOR_TYPE,
   innovationLabel,
   lbl,
 } from './labels.js'
@@ -83,9 +83,14 @@ function serverRoteiro(data: BriefingData): RItem[] {
     const songs = (m.songs || []).filter((s) => s.title_artist.trim()).map((s) => s.title_artist)
     items.push({ key: `moment:${def.id}`, label: def.label, time: m.time || '', detail: songs.join(' · ') })
   })
+  data.custom_moments.forEach((c, i) => {
+    if (!c.description.trim()) return
+    items.push({ key: `custom:${i}`, label: c.description, time: c.time || '', detail: c.song || '' })
+  })
   data.other_attractions.forEach((a, i) => {
     if (!a.description.trim()) return
-    items.push({ key: `attr:${i}`, label: a.description, time: a.time || '', detail: a.duration ? `Atração · ${a.duration}` : 'Atração' })
+    const dur = Number(a.duration) || 0
+    items.push({ key: `attr:${i}`, label: a.description, time: a.time || '', detail: dur ? `Atração · ${dur} min` : 'Atração' })
   })
   const order = data.roteiro_order || []
   const byTime = (a: RItem, b: RItem) => (a.time && b.time ? a.time.localeCompare(b.time) : a.time ? -1 : b.time ? 1 : 0)
@@ -177,9 +182,7 @@ export function buildEmailHtml(data: BriefingData): string {
         </tr>`,
     )
     .join('')
-  const roteiroInner =
-    (roteiroRows ? `<table width="100%" cellpadding="0" cellspacing="0">${roteiroRows}</table>` : '') +
-    (data.other_moments.trim() ? `<p style="margin:12px 0 0;font-size:14px;color:${TEXT};"><strong style="color:${MUTED};">Outros momentos:</strong> ${esc(data.other_moments)}</p>` : '')
+  const roteiroInner = roteiroRows ? `<table width="100%" cellpadding="0" cellspacing="0">${roteiroRows}</table>` : ''
   const roteiro = roteiroInner.trim() ? sub('Sequência do evento', roteiroInner) : ''
 
   // OPERAÇÃO
@@ -189,7 +192,11 @@ export function buildEmailHtml(data: BriefingData): string {
   const acksHtml = data.acknowledgements.length
     ? `<p style="margin:10px 0 4px;font-size:14px;color:${MUTED};font-weight:600;">Ciências confirmadas (${data.acknowledgements.length}/${Object.keys(ACKNOWLEDGEMENTS).length}):</p><ul style="margin:0;padding-left:20px;color:${TEXT};font-size:13px;">${data.acknowledgements.map((id) => `<li>${esc(lbl(ACKNOWLEDGEMENTS, id))}</li>`).join('')}</ul>`
     : ''
-  const operacao = sub('Operação', kv('Estrutura de som', esc(lbl(SOUND_STRUCTURE, data.sound_structure))) + servicesHtml + kv('Observações', esc(data.notes)) + acksHtml)
+  const vendors = data.vendors.filter((v) => v.name.trim() || v.contact.trim())
+  const vendorsHtml = vendors.length
+    ? `<p style="margin:0 0 4px;font-size:14px;color:${MUTED};font-weight:600;">Fornecedores:</p><ul style="margin:0 0 10px;padding-left:20px;color:${TEXT};font-size:14px;">${vendors.map((v) => `<li>${esc(lbl(VENDOR_TYPE, v.type))}: ${[v.name, v.contact].filter(Boolean).map(esc).join(' · ')}</li>`).join('')}</ul>`
+    : ''
+  const operacao = sub('Operação', servicesHtml + vendorsHtml + kv('Observações', esc(data.notes)) + acksHtml)
 
   return `<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

@@ -11,7 +11,7 @@ import {
   OPTIONAL_SERVICES,
   REFERENCE_TYPE_OPTIONS,
   ROLE_OPTIONS,
-  SOUND_STRUCTURE_OPTIONS,
+  VENDOR_TYPE_OPTIONS,
   energyPhases,
   innovationLabel,
   labelOf,
@@ -183,7 +183,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
 
   // ═══════════ ROTEIRO ═══════════
   const roteiro = buildRoteiro(data)
-  if (roteiro.length || data.other_moments.trim()) {
+  if (roteiro.length) {
     band('Roteiro')
     roteiro.forEach((item) => {
       ensure(30)
@@ -209,18 +209,19 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
       doc.setLineWidth(0.5)
       doc.line(margin + 56, y - 4, margin + contentW, y - 4)
     })
-    if (data.other_moments.trim()) {
-      y += 6
-      kv('Outros momentos', data.other_moments)
-    }
   }
 
   // ═══════════ OPERAÇÃO ═══════════
   band('Operação')
-  kv('Estrutura de som', labelOf(SOUND_STRUCTURE_OPTIONS, data.sound_structure))
   bullets(
     'Serviços opcionais desejados',
     data.optional_services.map((v) => labelOf(OPTIONAL_SERVICES, v)),
+  )
+  bullets(
+    'Fornecedores',
+    data.vendors
+      .filter((v) => v.name.trim() || v.contact.trim())
+      .map((v) => `${labelOf(VENDOR_TYPE_OPTIONS, v.type)}: ${[v.name, v.contact].filter(Boolean).join(', ')}`),
   )
   kv('Observações', data.notes)
   const acked = ACKNOWLEDGEMENTS.filter((a) => data.acknowledgements.includes(a.id))

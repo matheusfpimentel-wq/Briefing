@@ -8,7 +8,7 @@ import {
   OPTIONAL_SERVICES,
   REFERENCE_TYPE_OPTIONS,
   ROLE_OPTIONS,
-  SOUND_STRUCTURE_OPTIONS,
+  VENDOR_TYPE_OPTIONS,
   energyPhases,
   labelOf,
   momentsFor,
@@ -164,7 +164,13 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
             const songs = m.songs.filter((s) => s.title_artist.trim())
             return <Row key={def.id} label={`${m.time ? `${m.time} · ` : ''}${def.label}`} value={songs.map((s) => s.title_artist).join(' · ') || 'Sim'} />
           })}
-        <Row label="Outros momentos" value={data.other_moments} />
+        <Row
+          label="Outros momentos"
+          value={data.custom_moments
+            .filter((c) => c.description.trim())
+            .map((c) => `${c.time ? `${c.time} · ` : ''}${c.description}${c.song ? ` (${c.song})` : ''}`)
+            .join(' | ')}
+        />
         <Row
           label="Roteiro (ordem)"
           value={
@@ -185,8 +191,14 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
       </Section>
 
       <Section title="Operação" block={6} onEdit={onEditBlock}>
-        <Row label="Estrutura de som" value={labelOf(SOUND_STRUCTURE_OPTIONS, data.sound_structure)} />
         <Row label="Serviços opcionais" value={data.optional_services.map((v) => labelOf(OPTIONAL_SERVICES, v)).join(', ')} />
+        <Row
+          label="Fornecedores"
+          value={data.vendors
+            .filter((v) => v.name.trim() || v.contact.trim())
+            .map((v) => `${labelOf(VENDOR_TYPE_OPTIONS, v.type)}: ${[v.name, v.contact].filter(Boolean).join(', ')}`)
+            .join(' | ')}
+        />
         <Row label="Quadro de ciências" value={data.acknowledgements.length === ACKNOWLEDGEMENTS.length ? 'Todos os pontos confirmados ✓' : `${data.acknowledgements.length} de ${ACKNOWLEDGEMENTS.length} confirmados`} />
         <Row label="Observações" value={data.notes} />
       </Section>

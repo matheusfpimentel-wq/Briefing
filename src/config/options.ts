@@ -79,11 +79,15 @@ export const GENRE_SUGGESTIONS: string[] = [
   'Brega / Brega-funk',
 ]
 
-export const SOUND_STRUCTURE_OPTIONS: Option[] = [
-  { value: 'dj_leva', label: 'O DJ leva som e luz' },
-  { value: 'local_fornece', label: 'O local fornece' },
-  { value: 'fornecedor', label: 'Já contratamos um fornecedor' },
-  { value: 'nao_sei', label: 'Ainda não sei' },
+// Fornecedores que o cliente já tem / pretende contratar.
+export const VENDOR_TYPE_OPTIONS: Option[] = [
+  { value: 'cerimonial', label: 'Cerimonial / assessoria' },
+  { value: 'mestre_cerimonias', label: 'Mestre de cerimônias' },
+  { value: 'sonorizacao', label: 'Sonorização' },
+  { value: 'iluminacao', label: 'Iluminação' },
+  { value: 'fotografia', label: 'Foto / vídeo' },
+  { value: 'buffet', label: 'Buffet' },
+  { value: 'outro', label: 'Outro' },
 ]
 
 // Serviços opcionais que o cliente pode querer (checkbox).

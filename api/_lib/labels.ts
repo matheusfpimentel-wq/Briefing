@@ -41,11 +41,14 @@ export const AUDIENCE_VIBE: Record<string, string> = {
   exigente: 'Exigente com música',
 }
 
-export const SOUND_STRUCTURE: Record<string, string> = {
-  dj_leva: 'O DJ leva som e luz',
-  local_fornece: 'O local fornece',
-  fornecedor: 'Já contratamos um fornecedor',
-  nao_sei: 'Ainda não sei',
+export const VENDOR_TYPE: Record<string, string> = {
+  cerimonial: 'Cerimonial / assessoria',
+  mestre_cerimonias: 'Mestre de cerimônias',
+  sonorizacao: 'Sonorização',
+  iluminacao: 'Iluminação',
+  fotografia: 'Foto / vídeo',
+  buffet: 'Buffet',
+  outro: 'Outro',
 }
 
 export const OPTIONAL_SERVICES: Record<string, string> = {

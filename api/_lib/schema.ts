@@ -21,7 +21,19 @@ const referenceItem = z.object({
 const attraction = z.object({
   description: z.string().max(300).default(''),
   time: z.string().max(10).default(''),
-  duration: z.string().max(60).default(''),
+  duration: z.string().max(10).default(''),
+})
+
+const customMoment = z.object({
+  description: z.string().max(300).default(''),
+  time: z.string().max(10).default(''),
+  song: z.string().max(300).default(''),
+})
+
+const vendor = z.object({
+  type: z.string().max(40).default('outro'),
+  name: z.string().max(200).default(''),
+  contact: z.string().max(200).default(''),
 })
 
 // Schema completo (todos os campos), usado de forma tolerante no /save
@@ -56,11 +68,11 @@ export const briefingDataSchema = z.object({
   other_attractions: z.array(attraction).max(10).default([]),
 
   moments: z.record(z.string(), momentValue).default({}),
-  other_moments: z.string().max(1500).default(''),
+  custom_moments: z.array(customMoment).max(20).default([]),
   roteiro_order: z.array(z.string().max(60)).max(60).default([]),
 
-  sound_structure: z.string().max(40).default(''),
   optional_services: z.array(z.string().max(60)).max(30).default([]),
+  vendors: z.array(vendor).max(20).default([]),
   acknowledgements: z.array(z.string().max(40)).max(30).default([]),
   notes: z.string().max(2000).default(''),
 })

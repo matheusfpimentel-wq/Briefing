@@ -39,8 +39,10 @@ export type CustomStep =
   | 'references'
   | 'attractions'
   | 'moments'
+  | 'customMoments'
   | 'roteiro'
   | 'services'
+  | 'vendors'
   | 'acknowledgements'
   | 'summary'
 
@@ -193,19 +195,12 @@ export const STEPS: StepDef[] = [
     when: (d) => momentsFor(d.event_type).length > 0,
   },
   {
-    id: 'other_moments',
+    id: 'customMoments',
     block: 5,
     blockLabel: 'Momentos especiais',
     title: 'Algum outro momento especial?',
-    subtitle: 'Opcional. Descreva e diga a música.',
-    fields: [
-      {
-        name: 'other_moments',
-        type: 'textarea',
-        label: 'Outros momentos',
-        placeholder: 'Ex.: surpresa para a mãe na hora do bolo, tocar "Trem-Bala".',
-      },
-    ],
+    subtitle: 'Opcional. Descreva, diga a música e o horário (se já souber). Entra no roteiro.',
+    custom: 'customMoments',
   },
   {
     id: 'roteiro',
@@ -214,7 +209,10 @@ export const STEPS: StepDef[] = [
     title: 'Roteiro do evento',
     subtitle: 'Organize a ordem dos momentos e atrações. Quem tem horário entra na hora certa; o resto você arrasta pra ordenar.',
     custom: 'roteiro',
-    when: (d) => momentsFor(d.event_type).some((m) => d.moments[m.id]?.enabled) || d.other_attractions.some((a) => a.description.trim()),
+    when: (d) =>
+      momentsFor(d.event_type).some((m) => d.moments[m.id]?.enabled) ||
+      d.other_attractions.some((a) => a.description.trim()) ||
+      d.custom_moments.some((m) => m.description.trim()),
   },
 
   // ─────────────── BLOCO 6 — OPERAÇÃO ───────────────
@@ -222,9 +220,17 @@ export const STEPS: StepDef[] = [
     id: 'services',
     block: 6,
     blockLabel: 'Operação',
-    title: 'Estrutura e serviços',
-    subtitle: 'Marque o que você gostaria de ter na festa.',
+    title: 'Serviços que você gostaria de ter',
+    subtitle: 'Marque o que faz sentido pra sua festa.',
     custom: 'services',
+  },
+  {
+    id: 'vendors',
+    block: 6,
+    blockLabel: 'Operação',
+    title: 'Quais fornecedores já estão no time?',
+    subtitle: 'Cerimonial, mestre de cerimônias, sonorização, iluminação. Ajuda a alinhar com todo mundo.',
+    custom: 'vendors',
   },
   {
     id: 'acknowledgements',
@@ -281,10 +287,10 @@ export function createEmptyBriefing(): BriefingData {
     signature_song: '',
     other_attractions: [],
     moments: {},
-    other_moments: '',
+    custom_moments: [],
     roteiro_order: [],
-    sound_structure: '',
     optional_services: [],
+    vendors: [],
     acknowledgements: [],
     notes: '',
   }

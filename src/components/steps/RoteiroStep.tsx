@@ -1,7 +1,7 @@
 import { DndContext, DragEndEvent, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { buildRoteiro, sortKeysByTime } from '@/lib/roteiro'
+import { buildRoteiro, findOverlaps, sortKeysByTime } from '@/lib/roteiro'
 import { StepProps } from './stepProps'
 
 interface RowProps {
@@ -55,6 +55,7 @@ function SortableRow({ itemKey, label, time, detail, onTime }: RowProps) {
 export default function RoteiroStep({ data, update }: StepProps) {
   const items = buildRoteiro(data)
   const keys = items.map((i) => i.key)
+  const overlaps = findOverlaps(data)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -86,6 +87,16 @@ export default function RoteiroStep({ data, update }: StepProps) {
 
   return (
     <div>
+      {overlaps.length > 0 && (
+        <div className="mb-4 border border-amber-500/50 bg-amber-500/10 p-4 text-sm text-amber-200" role="alert">
+          <p className="font-semibold">Atenção: sobreposição de horários</p>
+          <ul className="mt-1 list-disc list-inside">
+            {overlaps.map((w, i) => (
+              <li key={i}>{w}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="mb-4 flex justify-end">
         <button type="button" onClick={() => update({ roteiro_order: sortKeysByTime(data) })} className="text-sm font-medium text-accent-300 hover:underline">
           Ordenar por horário

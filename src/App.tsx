@@ -74,12 +74,7 @@ export default function App() {
         <div className="m-auto w-full max-w-3xl px-6 py-10 sm:py-16">
           <AnimatePresence mode="wait">
             {form.currentStep && (
-              <StepShell
-                key={form.currentStep.id}
-                index={form.stepIndex}
-                title={form.currentStep.title}
-                subtitle={form.currentStep.subtitle}
-              >
+              <StepShell key={form.currentStep.id} title={form.currentStep.title} subtitle={form.currentStep.subtitle}>
                 <StepRenderer
                   step={form.currentStep}
                   data={form.data}

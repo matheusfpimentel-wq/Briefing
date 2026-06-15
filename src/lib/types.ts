@@ -25,7 +25,22 @@ export interface ReferenceItem {
 export interface Attraction {
   description: string
   time: string
+  /** Duração em minutos (string para o input). */
   duration: string
+}
+
+/** Momento especial livre, definido pelo cliente, com horário opcional. */
+export interface CustomMoment {
+  description: string
+  time: string
+  song: string
+}
+
+/** Fornecedor já contratado pelo cliente. */
+export interface Vendor {
+  type: string
+  name: string
+  contact: string
 }
 
 export interface BriefingData {
@@ -64,13 +79,13 @@ export interface BriefingData {
 
   // ── Bloco 5 — Momentos especiais ──
   moments: Record<string, MomentValue>
-  other_moments: string
+  custom_moments: CustomMoment[]
   /** Ordem manual do roteiro (chaves dos itens) para os sem horário. */
   roteiro_order: string[]
 
   // ── Bloco 6 — Operação ──
-  sound_structure: string
   optional_services: string[]
+  vendors: Vendor[]
   acknowledgements: string[]
   notes: string
 }
