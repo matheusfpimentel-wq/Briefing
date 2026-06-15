@@ -43,11 +43,13 @@ export default function App() {
     }
   }
 
+  const nextLabel = form.currentStep?.nextLabel ?? 'Avançar'
+
   return (
     <div className="min-h-[100dvh] flex flex-col">
-      {/* Cabeçalho fixo com progresso */}
-      <header className="sticky top-0 z-10 bg-ink-900/80 backdrop-blur border-b border-ink-700">
-        <div className="mx-auto max-w-2xl px-5 pt-4 pb-3">
+      {/* Cabeçalho com progresso */}
+      <header className="sticky top-0 z-10 bg-ink-900/70 backdrop-blur border-b border-ink-700/60">
+        <div className="mx-auto max-w-4xl px-6 pt-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
             <span aria-hidden className="h-7 w-7 shrink-0 rotate-12 rounded-lg bg-gradient-to-br from-accent-500 to-accent2-500 shadow-lg shadow-accent-900/40" />
             <div className="leading-tight">
@@ -67,36 +69,46 @@ export default function App() {
         </div>
       </header>
 
-      {/* Conteúdo da etapa */}
-      <main className="flex-1 mx-auto w-full max-w-2xl px-5 py-8" onKeyDown={onKeyDown}>
-        <AnimatePresence mode="wait">
-          {form.currentStep && (
-            <StepShell key={form.currentStep.id} title={form.currentStep.title} subtitle={form.currentStep.subtitle}>
-              <StepRenderer
-                step={form.currentStep}
-                data={form.data}
-                errors={form.errors}
-                update={form.update}
-                onEditBlock={form.goToBlock}
-                onSubmit={handleSubmit}
-                submitting={submitting}
-                submitError={submitError}
-              />
-            </StepShell>
-          )}
-        </AnimatePresence>
+      {/* Conteúdo da etapa (centralizado verticalmente, estilo Typeform) */}
+      <main className="flex flex-1" onKeyDown={onKeyDown}>
+        <div className="m-auto w-full max-w-3xl px-6 py-10 sm:py-16">
+          <AnimatePresence mode="wait">
+            {form.currentStep && (
+              <StepShell
+                key={form.currentStep.id}
+                index={form.stepIndex}
+                title={form.currentStep.title}
+                subtitle={form.currentStep.subtitle}
+              >
+                <StepRenderer
+                  step={form.currentStep}
+                  data={form.data}
+                  errors={form.errors}
+                  update={form.update}
+                  onEditBlock={form.goToBlock}
+                  onSubmit={handleSubmit}
+                  submitting={submitting}
+                  submitError={submitError}
+                />
+              </StepShell>
+            )}
+          </AnimatePresence>
+        </div>
       </main>
 
       {/* Navegação (escondida na tela de resumo, que tem botão próprio) */}
       {!form.isLast && (
-        <footer className="sticky bottom-0 bg-ink-900/80 backdrop-blur border-t border-ink-700">
-          <div className="mx-auto max-w-2xl px-5 py-4 flex items-center justify-between gap-4">
-            <button type="button" onClick={form.back} disabled={form.isFirst} className="btn-ghost">
-              ← Voltar
+        <footer className="sticky bottom-0 bg-ink-900/70 backdrop-blur border-t border-ink-700/60">
+          <div className="mx-auto max-w-3xl px-6 py-4 flex items-center justify-between gap-4">
+            <button type="button" onClick={form.back} disabled={form.isFirst} className="btn-ghost disabled:opacity-0">
+              Voltar
             </button>
-            <button type="button" onClick={() => void form.next()} className="btn-primary flex-1 sm:flex-none sm:min-w-[160px]">
-              Avançar →
-            </button>
+            <div className="flex items-center gap-3">
+              <span className="hidden text-xs text-slate-500 sm:inline">pressione Enter ↵</span>
+              <button type="button" onClick={() => void form.next()} className="btn-primary min-w-[150px]">
+                {nextLabel}
+              </button>
+            </div>
           </div>
         </footer>
       )}

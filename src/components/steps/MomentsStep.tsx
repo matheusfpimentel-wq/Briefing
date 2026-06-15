@@ -16,7 +16,11 @@ export default function MomentsStep({ data, update }: StepProps) {
 
   const toggle = (id: string) => {
     const m = getMoment(id)
-    setMoment(id, { enabled: !m.enabled, songs: m.songs.length ? m.songs : [{ ...EMPTY_SONG }] })
+    setMoment(id, { ...m, enabled: !m.enabled, songs: m.songs.length ? m.songs : [{ ...EMPTY_SONG }] })
+  }
+
+  const setTime = (id: string, time: string) => {
+    setMoment(id, { ...getMoment(id), time })
   }
 
   const setSong = (id: string, index: number, patch: Partial<SongRef>) => {
@@ -62,6 +66,18 @@ export default function MomentsStep({ data, update }: StepProps) {
 
             {m.enabled && (
               <div className="mt-4 space-y-3">
+                <div>
+                  <label className="field-label" htmlFor={`moment-time-${def.id}`}>
+                    Horário (opcional)
+                  </label>
+                  <input
+                    id={`moment-time-${def.id}`}
+                    type="time"
+                    className="field-input"
+                    value={m.time ?? ''}
+                    onChange={(e) => setTime(def.id, e.target.value)}
+                  />
+                </div>
                 {m.songs.map((song, i) => (
                   <div key={i} className="space-y-2 rounded-lg bg-ink-700/60 p-3">
                     {def.multi && m.songs.length > 1 && (

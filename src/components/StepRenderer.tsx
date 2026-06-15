@@ -9,10 +9,12 @@ import EnergyStep from './steps/EnergyStep'
 import MomentsStep from './steps/MomentsStep'
 import MustPlayStep from './steps/MustPlayStep'
 import ReferencesStep from './steps/ReferencesStep'
+import RoteiroStep from './steps/RoteiroStep'
 import ServicesStep from './steps/ServicesStep'
 import SummaryStep from './steps/SummaryStep'
 import TopGenresStep from './steps/TopGenresStep'
 import VetoedGenresStep from './steps/VetoedGenresStep'
+import WelcomeStep from './steps/WelcomeStep'
 
 interface Props {
   step: StepDef
@@ -30,6 +32,8 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
 
   if (step.custom) {
     switch (step.custom) {
+      case 'welcome':
+        return <WelcomeStep {...stepProps} />
       case 'audience':
         return <AudienceStep {...stepProps} />
       case 'energy':
@@ -46,6 +50,8 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
         return <ReferencesStep {...stepProps} />
       case 'attractions':
         return <AttractionsStep {...stepProps} />
+      case 'roteiro':
+        return <RoteiroStep {...stepProps} />
       case 'moments':
         return <MomentsStep {...stepProps} />
       case 'services':

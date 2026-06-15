@@ -8,9 +8,10 @@ export interface SongRef {
   link?: string
 }
 
-/** Um momento especial: vai acontecer? e qual(is) música(s). */
+/** Um momento especial: vai acontecer? hora (opcional) e qual(is) música(s). */
 export interface MomentValue {
   enabled: boolean
+  time?: string
   songs: SongRef[]
 }
 
@@ -64,6 +65,8 @@ export interface BriefingData {
   // ── Bloco 5 — Momentos especiais ──
   moments: Record<string, MomentValue>
   other_moments: string
+  /** Ordem manual do roteiro (chaves dos itens) para os sem horário. */
+  roteiro_order: string[]
 
   // ── Bloco 6 — Operação ──
   sound_structure: string

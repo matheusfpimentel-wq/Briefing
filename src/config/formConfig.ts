@@ -5,7 +5,7 @@
 
 import type { BriefingData } from '@/lib/types'
 import { isEmail, isPhoneBR } from '@/lib/validation'
-import { ACKNOWLEDGEMENTS, EVENT_TYPE_OPTIONS, Option, ROLE_OPTIONS, momentsFor } from './options'
+import { EVENT_TYPE_OPTIONS, Option, ROLE_OPTIONS, momentsFor } from './options'
 
 export type FieldType =
   | 'text'
@@ -29,6 +29,7 @@ export interface FieldDef {
 
 /** Componentes de tela especiais (widgets customizados). */
 export type CustomStep =
+  | 'welcome'
   | 'audience'
   | 'energy'
   | 'topGenres'
@@ -38,6 +39,7 @@ export type CustomStep =
   | 'references'
   | 'attractions'
   | 'moments'
+  | 'roteiro'
   | 'services'
   | 'acknowledgements'
   | 'summary'
@@ -50,6 +52,8 @@ export interface StepDef {
   subtitle?: string
   fields?: FieldDef[]
   custom?: CustomStep
+  /** Texto do botão de avançar (default "Avançar"). */
+  nextLabel?: string
   when?: (data: BriefingData) => boolean
   validate?: (data: BriefingData) => Record<string, string>
 }
@@ -57,23 +61,32 @@ export interface StepDef {
 export const MAX_MUST_PLAY = 10
 
 export const STEPS: StepDef[] = [
+  // ─────────────── BOAS-VINDAS ───────────────
+  {
+    id: 'welcome',
+    block: 0,
+    blockLabel: 'Início',
+    title: 'Vamos desenhar a trilha do seu evento',
+    custom: 'welcome',
+    nextLabel: 'Começar',
+  },
+
   // ─────────────── BLOCO 1 — EVENTO E CONTATO ───────────────
   {
     id: 'contact',
     block: 1,
     blockLabel: 'Evento e contato',
-    title: 'Vamos começar! Como você se chama?',
-    subtitle: 'Deixe seu contato para a gente alinhar os detalhes da festa.',
+    title: 'Pra começar, seus dados de contato',
+    subtitle: 'Só isto eu preciso pra falar com você. O resto é tranquilo.',
     fields: [
       { name: 'respondent_name', type: 'text', label: 'Seu nome', required: true, placeholder: 'Ex.: Marina Costa' },
-      { name: 'respondent_role', type: 'select', label: 'Você é...', options: ROLE_OPTIONS, required: true },
+      { name: 'respondent_role', type: 'select', label: 'Você é...', options: ROLE_OPTIONS },
       { name: 'whatsapp', type: 'tel', label: 'WhatsApp', required: true, placeholder: '(11) 99999-9999' },
       { name: 'email', type: 'email', label: 'E-mail', required: true, placeholder: 'voce@email.com' },
     ],
     validate: (d) => {
       const e: Record<string, string> = {}
       if (!d.respondent_name.trim()) e.respondent_name = 'Conta pra mim seu nome :)'
-      if (!d.respondent_role) e.respondent_role = 'Selecione uma opção'
       if (!isPhoneBR(d.whatsapp)) e.whatsapp = 'Informe um WhatsApp com DDD'
       if (!isEmail(d.email)) e.email = 'Informe um e-mail válido'
       return e
@@ -84,8 +97,7 @@ export const STEPS: StepDef[] = [
     block: 1,
     blockLabel: 'Evento e contato',
     title: 'Qual é o tipo de evento?',
-    fields: [{ name: 'event_type', type: 'select', label: 'Tipo de evento', options: EVENT_TYPE_OPTIONS, required: true }],
-    validate: (d): Record<string, string> => (d.event_type ? {} : { event_type: 'Selecione o tipo de evento' }),
+    fields: [{ name: 'event_type', type: 'select', label: 'Tipo de evento', options: EVENT_TYPE_OPTIONS }],
   },
   {
     id: 'where_when',
@@ -108,7 +120,6 @@ export const STEPS: StepDef[] = [
     title: 'Quem vai estar na festa?',
     subtitle: 'Isso me ajuda a sacar a cara da galera.',
     custom: 'audience',
-    validate: (d): Record<string, string> => (d.age_ranges.length ? {} : { age_ranges: 'Selecione ao menos uma faixa etária' }),
   },
 
   // ─────────────── BLOCO 3 — ATMOSFERA ───────────────
@@ -131,20 +142,20 @@ export const STEPS: StepDef[] = [
     custom: 'topGenres',
   },
   {
-    id: 'vetoed',
-    block: 4,
-    blockLabel: 'Música',
-    title: 'Tem alguma vibe que NÃO combina?',
-    subtitle: 'Quantas quiser. O que você escolheu antes não aparece aqui.',
-    custom: 'vetoed',
-  },
-  {
     id: 'mustPlay',
     block: 4,
     blockLabel: 'Música',
     title: 'Músicas ou artistas que TÊM que tocar',
     subtitle: `Até ${MAX_MUST_PLAY} itens. O link é opcional (Spotify ou YouTube).`,
     custom: 'mustPlay',
+  },
+  {
+    id: 'vetoed',
+    block: 4,
+    blockLabel: 'Música',
+    title: 'Tem alguma vibe que NÃO combina?',
+    subtitle: 'Quantas quiser. O que você escolheu antes não aparece aqui.',
+    custom: 'vetoed',
   },
   {
     id: 'doNotPlay',
@@ -177,7 +188,7 @@ export const STEPS: StepDef[] = [
     block: 5,
     blockLabel: 'Momentos especiais',
     title: 'Momentos especiais',
-    subtitle: 'Marque os que vão acontecer e diga a música de cada um.',
+    subtitle: 'Marque os que vão acontecer, a música e (se quiser) o horário.',
     custom: 'moments',
     when: (d) => momentsFor(d.event_type).length > 0,
   },
@@ -196,6 +207,15 @@ export const STEPS: StepDef[] = [
       },
     ],
   },
+  {
+    id: 'roteiro',
+    block: 5,
+    blockLabel: 'Momentos especiais',
+    title: 'Roteiro do evento',
+    subtitle: 'Organize a ordem dos momentos e atrações. Quem tem horário entra na hora certa; o resto você arrasta pra ordenar.',
+    custom: 'roteiro',
+    when: (d) => momentsFor(d.event_type).some((m) => d.moments[m.id]?.enabled) || d.other_attractions.some((a) => a.description.trim()),
+  },
 
   // ─────────────── BLOCO 6 — OPERAÇÃO ───────────────
   {
@@ -205,19 +225,14 @@ export const STEPS: StepDef[] = [
     title: 'Estrutura e serviços',
     subtitle: 'Marque o que você gostaria de ter na festa.',
     custom: 'services',
-    validate: (d): Record<string, string> => (d.sound_structure ? {} : { sound_structure: 'Selecione uma opção' }),
   },
   {
     id: 'acknowledgements',
     block: 6,
     blockLabel: 'Operação',
     title: 'Quadro de ciências',
-    subtitle: 'Pra deixar tudo combinado, confirme cada ponto abaixo.',
+    subtitle: 'Pra deixar tudo combinado, dê uma olhada e confirme o que fizer sentido.',
     custom: 'acknowledgements',
-    validate: (d): Record<string, string> => {
-      const allChecked = ACKNOWLEDGEMENTS.every((a) => d.acknowledgements.includes(a.id))
-      return allChecked ? {} : { acknowledgements: 'Confirme todos os pontos para continuar' }
-    },
   },
   {
     id: 'notes',
@@ -267,6 +282,7 @@ export function createEmptyBriefing(): BriefingData {
     other_attractions: [],
     moments: {},
     other_moments: '',
+    roteiro_order: [],
     sound_structure: '',
     optional_services: [],
     acknowledgements: [],

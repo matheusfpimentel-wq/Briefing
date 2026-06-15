@@ -9,6 +9,7 @@ const songRef = z.object({
 
 const momentValue = z.object({
   enabled: z.boolean().default(false),
+  time: z.string().max(10).optional().default(''),
   songs: z.array(songRef).max(20).default([]),
 })
 
@@ -56,6 +57,7 @@ export const briefingDataSchema = z.object({
 
   moments: z.record(z.string(), momentValue).default({}),
   other_moments: z.string().max(1500).default(''),
+  roteiro_order: z.array(z.string().max(60)).max(60).default([]),
 
   sound_structure: z.string().max(40).default(''),
   optional_services: z.array(z.string().max(60)).max(30).default([]),

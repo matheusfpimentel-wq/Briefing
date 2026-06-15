@@ -49,7 +49,7 @@
   }
 
   .field-input {
-    @apply w-full rounded-xl bg-ink-700/70 border border-ink-500 px-4 py-3 text-base text-slate-100
+    @apply w-full rounded-xl bg-ink-700/70 border border-ink-500 px-4 py-3.5 text-base text-slate-100
       placeholder:text-slate-500 transition-all
       focus:border-accent-400 focus:ring-2 focus:ring-accent-500/40 focus:bg-ink-700;
   }

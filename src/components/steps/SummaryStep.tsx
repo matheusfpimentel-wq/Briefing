@@ -14,6 +14,7 @@ import {
   momentsFor,
 } from '@/config/options'
 import type { BriefingData } from '@/lib/types'
+import { buildRoteiro } from '@/lib/roteiro'
 
 interface Props {
   data: BriefingData
@@ -50,6 +51,7 @@ function Section({ title, block, onEdit, children }: { title: string; block: num
 export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, error }: Props) {
   const phases = energyPhases(data.event_type)
   const momentDefs = momentsFor(data.event_type)
+  const roteiro = buildRoteiro(data)
 
   return (
     <div className="space-y-5">
@@ -154,14 +156,32 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
         />
       </Section>
 
-      <Section title="Momentos especiais" block={5} onEdit={onEditBlock}>
+      <Section title="Momentos e roteiro" block={5} onEdit={onEditBlock}>
         {momentDefs
           .filter((def) => data.moments[def.id]?.enabled)
           .map((def) => {
-            const songs = data.moments[def.id].songs.filter((s) => s.title_artist.trim())
-            return <Row key={def.id} label={def.label} value={songs.map((s) => s.title_artist).join(' · ') || 'Sim'} />
+            const m = data.moments[def.id]
+            const songs = m.songs.filter((s) => s.title_artist.trim())
+            return <Row key={def.id} label={`${m.time ? `${m.time} · ` : ''}${def.label}`} value={songs.map((s) => s.title_artist).join(' · ') || 'Sim'} />
           })}
         <Row label="Outros momentos" value={data.other_moments} />
+        <Row
+          label="Roteiro (ordem)"
+          value={
+            roteiro.length ? (
+              <ol className="list-decimal list-inside">
+                {roteiro.map((it) => (
+                  <li key={it.key}>
+                    {it.time ? `${it.time} · ` : ''}
+                    {it.label}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              ''
+            )
+          }
+        />
       </Section>
 
       <Section title="Operação" block={6} onEdit={onEditBlock}>
