@@ -1,6 +1,6 @@
 // Geração do PDF do briefing no navegador (cliente).
-// Relatório premium: capa + uma seção por página, campos em caixas,
-// fundo claro (imprimível), paleta violeta + dourado.
+// Design espelhando o formulário: claro, cantos retos, gradiente
+// violeta -> rosa da marca. Sem dourado. Capa + uma seção por página.
 
 import { jsPDF } from 'jspdf'
 import {
@@ -22,15 +22,12 @@ import { formatDateBR } from './format'
 import type { BriefingData } from './types'
 
 type RGB = [number, number, number]
-const VIOLET: RGB = [99, 36, 201]
-const LAVENDER: RGB = [237, 233, 250]
-const DARK_VIOLET: RGB = [76, 29, 149]
-const GOLD: RGB = [176, 141, 73]
-const INK: RGB = [33, 28, 46]
-const MUTED: RGB = [122, 114, 136]
-const BOX_BG: RGB = [248, 247, 252]
-const BORDER: RGB = [227, 222, 240]
-const TRACK: RGB = [228, 224, 240]
+const VIOLET: RGB = [124, 58, 237]
+const PINK: RGB = [236, 72, 153]
+const INK: RGB = [26, 22, 40]
+const MUTED: RGB = [120, 116, 134]
+const LINE: RGB = [229, 227, 237]
+const SOFT: RGB = [249, 248, 253]
 
 export function buildBriefingPdf(data: BriefingData): jsPDF {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
@@ -38,7 +35,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   const pageH = doc.internal.pageSize.getHeight()
   const margin = 50
   const contentW = pageW - margin * 2
-  const pad = 12
+  const pad = 14
   let y = 0
 
   const ensure = (need: number) => {
@@ -48,132 +45,146 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     }
   }
 
+  // Faixa com gradiente violeta -> rosa (simulado por fatias verticais)
+  const gradRect = (x: number, gy: number, w: number, h: number, c1: RGB = VIOLET, c2: RGB = PINK) => {
+    const steps = Math.max(2, Math.round(w))
+    const sw = w / steps
+    for (let i = 0; i < steps; i++) {
+      const t = i / (steps - 1)
+      doc.setFillColor(
+        Math.round(c1[0] + (c2[0] - c1[0]) * t),
+        Math.round(c1[1] + (c2[1] - c1[1]) * t),
+        Math.round(c1[2] + (c2[2] - c1[2]) * t),
+      )
+      doc.rect(x + sw * i, gy, sw + 0.7, h, 'F')
+    }
+  }
+
   // ── Capa ──
+  gradRect(0, 0, pageW, 8)
   doc.setFillColor(...VIOLET)
-  doc.rect(0, 0, pageW, pageH, 'F')
-  doc.setFillColor(...GOLD)
-  doc.rect(margin, 250, 54, 4, 'F')
-  doc.setTextColor(214, 198, 245)
+  doc.rect(margin, 150, 22, 22, 'F')
+  gradRect(margin, 150, 22, 22)
+  doc.setTextColor(...INK)
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(12)
-  doc.text('BRIEFING MAZIK', margin, 230)
-  doc.setTextColor(255, 255, 255)
+  doc.setFontSize(11)
+  doc.text('BRIEFING MAZIK', margin + 32, 165)
+  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(...MUTED)
+  doc.setFontSize(9)
+  doc.text('CURADORIA MUSICAL', margin + 32, 178)
+
+  doc.setTextColor(...INK)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(30)
   const coverTitle = doc.splitTextToSize(`${labelOf(EVENT_TYPE_OPTIONS, data.event_type) || 'Evento'} de ${data.respondent_name || ''}`.trim(), contentW)
-  doc.text(coverTitle, margin, 290)
+  doc.text(coverTitle, margin, 250)
+  let cy = 250 + coverTitle.length * 32 + 6
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(13)
-  doc.setTextColor(225, 215, 248)
-  const coverSub = [formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às '), data.venue].filter(Boolean).join('\n')
-  if (coverSub) doc.text(coverSub.split('\n'), margin, 290 + coverTitle.length * 32 + 8)
-  doc.setFontSize(10)
-  doc.setTextColor(200, 184, 238)
-  doc.text('Curadoria musical para o seu evento', margin, pageH - margin)
+  doc.setTextColor(...MUTED)
+  ;[formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às '), data.venue].filter(Boolean).forEach((line) => {
+    doc.text(line, margin, cy)
+    cy += 19
+  })
+  gradRect(margin, pageH - margin - 18, 60, 3)
+  doc.setFontSize(9)
+  doc.setTextColor(...MUTED)
+  doc.text('Ficha de curadoria gerada pelo Briefing Mazik', margin, pageH - margin)
 
-  // ── Cabeçalho de seção (sempre em nova página) ──
+  // Cabeçalho de seção (nova página)
   const sectionPage = (label: string) => {
     doc.addPage()
-    y = margin
-    doc.setFillColor(...LAVENDER)
-    doc.rect(0, 0, pageW, 64, 'F')
-    doc.setFillColor(...GOLD)
-    doc.rect(0, 64, pageW, 3, 'F')
-    doc.setTextColor(...DARK_VIOLET)
+    y = margin + 10
+    doc.setTextColor(...INK)
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(15)
-    doc.text(label.toUpperCase(), margin, 40)
-    y = 92
+    doc.setFontSize(20)
+    doc.text(label, margin, y)
+    y += 10
+    gradRect(margin, y, 64, 3)
+    y += 26
   }
 
-  // Subtítulo dentro da seção
   const subTitle = (label: string) => {
-    ensure(30)
+    ensure(28)
     doc.setTextColor(...VIOLET)
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(12)
-    doc.text(label, margin, y)
-    y += 6
-    doc.setDrawColor(...GOLD)
-    doc.setLineWidth(1.2)
-    doc.line(margin, y, margin + 44, y)
+    doc.setFontSize(11)
+    doc.text(label.toUpperCase(), margin, y)
     y += 16
   }
 
-  // Caixa de um campo (label + valor)
+  const drawBox = (h: number) => {
+    doc.setFillColor(...SOFT)
+    doc.setDrawColor(...LINE)
+    doc.setLineWidth(1)
+    doc.rect(margin, y, contentW, h, 'FD')
+    gradRect(margin, y, 4, h) // barrinha de marca à esquerda
+  }
+
   const box = (label: string, value?: string) => {
     if (!value || !value.trim()) return
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
-    const lines = doc.splitTextToSize(value, contentW - pad * 2)
-    const boxH = pad + 12 + lines.length * 14 + pad - 4
-    ensure(boxH + 8)
-    doc.setFillColor(...BOX_BG)
-    doc.setDrawColor(...BORDER)
-    doc.setLineWidth(1)
-    doc.rect(margin, y, contentW, boxH, 'FD')
+    const lines = doc.splitTextToSize(value, contentW - pad * 2 - 6)
+    const h = pad + 12 + lines.length * 14 + pad - 4
+    ensure(h + 8)
+    drawBox(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
     doc.setTextColor(...MUTED)
-    doc.text(label.toUpperCase(), margin + pad, y + 16)
+    doc.text(label.toUpperCase(), margin + pad + 6, y + 16)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     doc.setTextColor(...INK)
-    doc.text(lines, margin + pad, y + 16 + 14)
-    y += boxH + 8
+    doc.text(lines, margin + pad + 6, y + 16 + 14)
+    y += h + 8
   }
 
-  // Caixa com lista
   const listBox = (label: string, items: string[], ordered = false) => {
     const clean = items.filter((i) => i && i.trim())
     if (!clean.length) return
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
-    const wrapped = clean.map((it, idx) => doc.splitTextToSize(`${ordered ? `${idx + 1}.` : '•'}  ${it}`, contentW - pad * 2))
+    const wrapped = clean.map((it, idx) => doc.splitTextToSize(`${ordered ? `${idx + 1}.` : '•'}  ${it}`, contentW - pad * 2 - 6))
     const totalLines = wrapped.reduce((a, w) => a + w.length, 0)
-    const boxH = pad + 12 + totalLines * 14 + pad - 4
-    ensure(boxH + 8)
-    doc.setFillColor(...BOX_BG)
-    doc.setDrawColor(...BORDER)
-    doc.setLineWidth(1)
-    doc.rect(margin, y, contentW, boxH, 'FD')
+    const h = pad + 12 + totalLines * 14 + pad - 4
+    ensure(h + 8)
+    drawBox(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
     doc.setTextColor(...MUTED)
-    doc.text(label.toUpperCase(), margin + pad, y + 16)
+    doc.text(label.toUpperCase(), margin + pad + 6, y + 16)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     doc.setTextColor(...INK)
     let ty = y + 16 + 14
     wrapped.forEach((w) => {
-      doc.text(w, margin + pad, ty)
+      doc.text(w, margin + pad + 6, ty)
       ty += w.length * 14
     })
-    y += boxH + 8
+    y += h + 8
   }
 
   const energyBox = (label: string, value: number, max: number, scaleText: string) => {
-    const boxH = 56
-    ensure(boxH + 8)
-    doc.setFillColor(...BOX_BG)
-    doc.setDrawColor(...BORDER)
-    doc.setLineWidth(1)
-    doc.rect(margin, y, contentW, boxH, 'FD')
+    const h = 54
+    ensure(h + 8)
+    drawBox(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(10)
     doc.setTextColor(...INK)
-    doc.text(label, margin + pad, y + 20)
+    doc.text(label, margin + pad + 6, y + 20)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
     doc.setTextColor(...VIOLET)
     doc.text(`${value}/${max} · ${scaleText}`, margin + contentW - pad, y + 20, { align: 'right' })
-    const barY = y + 34
-    const barW = contentW - pad * 2
-    doc.setFillColor(...TRACK)
-    doc.rect(margin + pad, barY, barW, 8, 'F')
-    doc.setFillColor(...VIOLET)
-    doc.rect(margin + pad, barY, (barW * value) / max, 8, 'F')
-    y += boxH + 8
+    const barX = margin + pad + 6
+    const barW = contentW - pad * 2 - 6
+    const barY = y + 32
+    doc.setFillColor(...LINE)
+    doc.rect(barX, barY, barW, 8, 'F')
+    gradRect(barX, barY, (barW * value) / max, 8)
+    y += h + 8
   }
 
   // ═══════════ INFORMAÇÕES GERAIS ═══════════
@@ -225,31 +236,28 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(11)
       const detailLines = item.detail ? doc.splitTextToSize(item.detail, contentW - 78 - pad) : []
-      const boxH = Math.max(34, 22 + detailLines.length * 12 + 8)
-      ensure(boxH + 6)
-      doc.setFillColor(...BOX_BG)
-      doc.setDrawColor(...BORDER)
+      const h = Math.max(36, 22 + detailLines.length * 12 + 8)
+      ensure(h + 6)
+      doc.setFillColor(...SOFT)
+      doc.setDrawColor(...LINE)
       doc.setLineWidth(1)
-      doc.rect(margin, y, contentW, boxH, 'FD')
-      // faixa do horário
-      doc.setFillColor(...LAVENDER)
-      doc.rect(margin, y, 70, boxH, 'F')
-      doc.setTextColor(...DARK_VIOLET)
+      doc.rect(margin, y, contentW, h, 'FD')
+      gradRect(margin, y, 64, h) // chip de horário com gradiente
+      doc.setTextColor(255, 255, 255)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(12)
-      doc.text(item.time || '—', margin + 35, y + boxH / 2 + 4, { align: 'center' })
-      // conteúdo
+      doc.text(item.time || '—', margin + 32, y + h / 2 + 4, { align: 'center' })
       doc.setTextColor(...INK)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(11)
-      doc.text(item.label, margin + 70 + pad, y + 20)
+      doc.text(item.label, margin + 64 + pad, y + 20)
       if (detailLines.length) {
         doc.setFont('helvetica', 'normal')
         doc.setFontSize(9)
         doc.setTextColor(...MUTED)
-        doc.text(detailLines, margin + 70 + pad, y + 34)
+        doc.text(detailLines, margin + 64 + pad, y + 34)
       }
-      y += boxH + 6
+      y += h + 6
     })
   }
 
