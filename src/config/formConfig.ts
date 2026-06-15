@@ -99,7 +99,8 @@ export const STEPS: StepDef[] = [
     block: 1,
     blockLabel: 'Evento e contato',
     title: 'Qual é o tipo de evento?',
-    fields: [{ name: 'event_type', type: 'select', label: 'Tipo de evento', options: EVENT_TYPE_OPTIONS }],
+    fields: [{ name: 'event_type', type: 'select', label: 'Tipo de evento', options: EVENT_TYPE_OPTIONS, required: true }],
+    validate: (d): Record<string, string> => (d.event_type ? {} : { event_type: 'Escolha o tipo de evento para continuar' }),
   },
   {
     id: 'where_when',
