@@ -1,6 +1,6 @@
 // Geração do PDF do briefing no navegador (cliente).
-// Design espelhando o formulário: claro, cantos retos, gradiente
-// violeta -> rosa da marca. Sem dourado. Capa + uma seção por página.
+// Estética inspirada no formulário: fundo claro levemente tingido (vitrificado),
+// painéis suaves e o gradiente violeta -> rosa da marca como acento.
 
 import { jsPDF } from 'jspdf'
 import {
@@ -24,10 +24,20 @@ import type { BriefingData } from './types'
 type RGB = [number, number, number]
 const VIOLET: RGB = [124, 58, 237]
 const PINK: RGB = [236, 72, 153]
-const INK: RGB = [26, 22, 40]
-const MUTED: RGB = [120, 116, 134]
-const LINE: RGB = [229, 227, 237]
-const SOFT: RGB = [249, 248, 253]
+const INK: RGB = [33, 28, 48]
+const MUTED: RGB = [124, 118, 140]
+const PAGE: RGB = [246, 244, 252] // fundo lavanda bem claro
+const PANEL: RGB = [255, 255, 255]
+const LINE: RGB = [228, 223, 240]
+
+// Troca glifos que a fonte padrão do PDF não desenha por ASCII.
+const A = (s: string): string =>
+  (s || '')
+    .replace(/[•·]/g, '-')
+    .replace(/[–—]/g, '-')
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/…/g, '...')
 
 export function buildBriefingPdf(data: BriefingData): jsPDF {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
@@ -38,14 +48,6 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   const pad = 14
   let y = 0
 
-  const ensure = (need: number) => {
-    if (y + need > pageH - margin) {
-      doc.addPage()
-      y = margin
-    }
-  }
-
-  // Faixa com gradiente violeta -> rosa (simulado por fatias verticais)
   const gradRect = (x: number, gy: number, w: number, h: number, c1: RGB = VIOLET, c2: RGB = PINK) => {
     const steps = Math.max(2, Math.round(w))
     const sw = w / steps
@@ -60,10 +62,25 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     }
   }
 
+  // Fundo tingido + leve brilho da marca (vitrificação) em cada página
+  const paintBg = () => {
+    doc.setFillColor(...PAGE)
+    doc.rect(0, 0, pageW, pageH, 'F')
+    // brilho difuso suave no topo-direito (faixas de baixo contraste)
+    gradRect(pageW - 220, -40, 260, 200, [233, 226, 250], [250, 232, 243])
+  }
+
+  const ensure = (need: number) => {
+    if (y + need > pageH - margin) {
+      doc.addPage()
+      paintBg()
+      y = margin
+    }
+  }
+
   // ── Capa ──
+  paintBg()
   gradRect(0, 0, pageW, 8)
-  doc.setFillColor(...VIOLET)
-  doc.rect(margin, 150, 22, 22, 'F')
   gradRect(margin, 150, 22, 22)
   doc.setTextColor(...INK)
   doc.setFont('helvetica', 'bold')
@@ -77,14 +94,14 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   doc.setTextColor(...INK)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(30)
-  const coverTitle = doc.splitTextToSize(`${labelOf(EVENT_TYPE_OPTIONS, data.event_type) || 'Evento'} de ${data.respondent_name || ''}`.trim(), contentW)
+  const coverTitle = doc.splitTextToSize(A(`${labelOf(EVENT_TYPE_OPTIONS, data.event_type) || 'Evento'} de ${data.respondent_name || ''}`.trim()), contentW)
   doc.text(coverTitle, margin, 250)
   let cy = 250 + coverTitle.length * 32 + 6
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(13)
   doc.setTextColor(...MUTED)
-  ;[formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às '), data.venue].filter(Boolean).forEach((line) => {
-    doc.text(line, margin, cy)
+  ;[formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' as '), data.venue].filter(Boolean).forEach((line) => {
+    doc.text(A(line), margin, cy)
     cy += 19
   })
   gradRect(margin, pageH - margin - 18, 60, 3)
@@ -92,14 +109,14 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   doc.setTextColor(...MUTED)
   doc.text('Ficha de curadoria gerada pelo Briefing Mazik', margin, pageH - margin)
 
-  // Cabeçalho de seção (nova página)
   const sectionPage = (label: string) => {
     doc.addPage()
+    paintBg()
     y = margin + 10
     doc.setTextColor(...INK)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(20)
-    doc.text(label, margin, y)
+    doc.text(A(label), margin, y)
     y += 10
     gradRect(margin, y, 64, 3)
     y += 26
@@ -110,30 +127,31 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
     doc.setTextColor(...VIOLET)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(11)
-    doc.text(label.toUpperCase(), margin, y)
+    doc.text(A(label).toUpperCase(), margin, y)
     y += 16
   }
 
-  const drawBox = (h: number) => {
-    doc.setFillColor(...SOFT)
+  const drawPanel = (h: number) => {
+    doc.setFillColor(...PANEL)
     doc.setDrawColor(...LINE)
     doc.setLineWidth(1)
     doc.rect(margin, y, contentW, h, 'FD')
-    gradRect(margin, y, 4, h) // barrinha de marca à esquerda
+    gradRect(margin, y, 4, h)
   }
 
-  const box = (label: string, value?: string) => {
-    if (!value || !value.trim()) return
+  const box = (label: string, raw?: string) => {
+    if (!raw || !raw.trim()) return
+    const value = A(raw)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     const lines = doc.splitTextToSize(value, contentW - pad * 2 - 6)
     const h = pad + 12 + lines.length * 14 + pad - 4
     ensure(h + 8)
-    drawBox(h)
+    drawPanel(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
     doc.setTextColor(...MUTED)
-    doc.text(label.toUpperCase(), margin + pad + 6, y + 16)
+    doc.text(A(label).toUpperCase(), margin + pad + 6, y + 16)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     doc.setTextColor(...INK)
@@ -142,19 +160,19 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   }
 
   const listBox = (label: string, items: string[], ordered = false) => {
-    const clean = items.filter((i) => i && i.trim())
+    const clean = items.filter((i) => i && i.trim()).map(A)
     if (!clean.length) return
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
-    const wrapped = clean.map((it, idx) => doc.splitTextToSize(`${ordered ? `${idx + 1}.` : '•'}  ${it}`, contentW - pad * 2 - 6))
+    const wrapped = clean.map((it, idx) => doc.splitTextToSize(`${ordered ? `${idx + 1}.` : '-'}  ${it}`, contentW - pad * 2 - 6))
     const totalLines = wrapped.reduce((a, w) => a + w.length, 0)
     const h = pad + 12 + totalLines * 14 + pad - 4
     ensure(h + 8)
-    drawBox(h)
+    drawPanel(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
     doc.setTextColor(...MUTED)
-    doc.text(label.toUpperCase(), margin + pad + 6, y + 16)
+    doc.text(A(label).toUpperCase(), margin + pad + 6, y + 16)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
     doc.setTextColor(...INK)
@@ -169,15 +187,15 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   const energyBox = (label: string, value: number, max: number, scaleText: string) => {
     const h = 54
     ensure(h + 8)
-    drawBox(h)
+    drawPanel(h)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(10)
     doc.setTextColor(...INK)
-    doc.text(label, margin + pad + 6, y + 20)
+    doc.text(A(label), margin + pad + 6, y + 20)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
     doc.setTextColor(...VIOLET)
-    doc.text(`${value}/${max} · ${scaleText}`, margin + contentW - pad, y + 20, { align: 'right' })
+    doc.text(A(`${value}/${max}  -  ${scaleText}`), margin + contentW - pad, y + 20, { align: 'right' })
     const barX = margin + pad + 6
     const barW = contentW - pad * 2 - 6
     const barY = y + 32
@@ -194,7 +212,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   box('WhatsApp', data.whatsapp)
   box('E-mail', data.email)
   box('Local', data.venue)
-  box('Data e horário', [formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às ')].filter(Boolean).join('   ·   '))
+  box('Data e horário', [formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' as ')].filter(Boolean).join('    '))
   y += 6
   subTitle('Público')
   box('Convidados', data.guest_count)
@@ -233,24 +251,25 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   if (roteiro.length) {
     sectionPage('Roteiro')
     roteiro.forEach((item) => {
+      const detail = A(item.detail)
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(11)
-      const detailLines = item.detail ? doc.splitTextToSize(item.detail, contentW - 78 - pad) : []
+      const detailLines = detail ? doc.splitTextToSize(detail, contentW - 78 - pad) : []
       const h = Math.max(36, 22 + detailLines.length * 12 + 8)
       ensure(h + 6)
-      doc.setFillColor(...SOFT)
+      doc.setFillColor(...PANEL)
       doc.setDrawColor(...LINE)
       doc.setLineWidth(1)
       doc.rect(margin, y, contentW, h, 'FD')
-      gradRect(margin, y, 64, h) // chip de horário com gradiente
+      gradRect(margin, y, 64, h)
       doc.setTextColor(255, 255, 255)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(12)
-      doc.text(item.time || '—', margin + 32, y + h / 2 + 4, { align: 'center' })
+      doc.text(item.time || '-', margin + 32, y + h / 2 + 4, { align: 'center' })
       doc.setTextColor(...INK)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(11)
-      doc.text(item.label, margin + 64 + pad, y + 20)
+      doc.text(A(item.label), margin + 64 + pad, y + 20)
       if (detailLines.length) {
         doc.setFont('helvetica', 'normal')
         doc.setFontSize(9)
