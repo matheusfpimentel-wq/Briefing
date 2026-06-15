@@ -30,7 +30,7 @@ export function toTimeStr(min: number): string {
 export function sortVal(time: string, startTime: string): number {
   if (!time) return Number.POSITIVE_INFINITY
   const t = toMin(time)
-  const s = startTime ? toMin(startTime) : 17 * 60
+  const s = startTime ? toMin(startTime) : 18 * 60
   return t >= s ? t - s : t - s + 1440
 }
 

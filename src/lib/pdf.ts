@@ -18,10 +18,13 @@ import {
   labelOf,
 } from '@/config/options'
 import { buildRoteiro } from './roteiro'
+import { formatDateBR } from './format'
 import type { BriefingData } from './types'
 
 type RGB = [number, number, number]
 const VIOLET: RGB = [99, 36, 201]
+const LAVENDER: RGB = [237, 233, 250]
+const DARK_VIOLET: RGB = [76, 29, 149]
 const GOLD: RGB = [176, 141, 73]
 const INK: RGB = [33, 28, 46]
 const MUTED: RGB = [122, 114, 136]
@@ -62,7 +65,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(13)
   doc.setTextColor(225, 215, 248)
-  const coverSub = [data.event_date, [data.start_time, data.end_time].filter(Boolean).join(' às '), data.venue].filter(Boolean).join('\n')
+  const coverSub = [formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às '), data.venue].filter(Boolean).join('\n')
   if (coverSub) doc.text(coverSub.split('\n'), margin, 290 + coverTitle.length * 32 + 8)
   doc.setFontSize(10)
   doc.setTextColor(200, 184, 238)
@@ -72,11 +75,11 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   const sectionPage = (label: string) => {
     doc.addPage()
     y = margin
-    doc.setFillColor(...VIOLET)
+    doc.setFillColor(...LAVENDER)
     doc.rect(0, 0, pageW, 64, 'F')
     doc.setFillColor(...GOLD)
     doc.rect(0, 64, pageW, 3, 'F')
-    doc.setTextColor(255, 255, 255)
+    doc.setTextColor(...DARK_VIOLET)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(15)
     doc.text(label.toUpperCase(), margin, 40)
@@ -180,7 +183,7 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
   box('WhatsApp', data.whatsapp)
   box('E-mail', data.email)
   box('Local', data.venue)
-  box('Data e horário', [data.event_date, [data.start_time, data.end_time].filter(Boolean).join(' às ')].filter(Boolean).join('   ·   '))
+  box('Data e horário', [formatDateBR(data.event_date), [data.start_time, data.end_time].filter(Boolean).join(' às ')].filter(Boolean).join('   ·   '))
   y += 6
   subTitle('Público')
   box('Convidados', data.guest_count)
@@ -229,9 +232,9 @@ export function buildBriefingPdf(data: BriefingData): jsPDF {
       doc.setLineWidth(1)
       doc.rect(margin, y, contentW, boxH, 'FD')
       // faixa do horário
-      doc.setFillColor(...VIOLET)
+      doc.setFillColor(...LAVENDER)
       doc.rect(margin, y, 70, boxH, 'F')
-      doc.setTextColor(255, 255, 255)
+      doc.setTextColor(...DARK_VIOLET)
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(12)
       doc.text(item.time || '—', margin + 35, y + boxH / 2 + 4, { align: 'center' })

@@ -37,6 +37,11 @@ function toMinE(t: string): number {
   return h * 60 + (m || 0)
 }
 
+function fmtDate(iso: string): string {
+  const m = (iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/)
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso
+}
+
 function waLink(whatsapp: string): string {
   const digits = whatsapp.replace(/\D/g, '')
   const withCountry = digits.startsWith('55') ? digits : `55${digits}`
@@ -98,7 +103,7 @@ function serverRoteiro(data: BriefingData): RItem[] {
     items.push({ key: `attr:${i}`, label: a.description, time: a.time || '', detail: dur ? `Atração · ${dur} min` : 'Atração' })
   })
   const order = data.roteiro_order || []
-  const anchor = data.start_time ? toMinE(data.start_time) : 17 * 60
+  const anchor = data.start_time ? toMinE(data.start_time) : 18 * 60
   const sval = (time: string) => {
     if (!time) return Number.POSITIVE_INFINITY
     const t = toMinE(time)
@@ -128,7 +133,7 @@ export function buildEmailHtml(data: BriefingData): string {
     <div style="background:${VIOLET};border-radius:14px;padding:22px;border-bottom:3px solid ${GOLD};">
       <p style="margin:0 0 6px;font-size:11px;letter-spacing:.14em;color:#d8c9f5;text-transform:uppercase;">Briefing Mazik · Curadoria musical</p>
       <h1 style="margin:0;font-size:21px;color:#fff;">${esc(lbl(EVENT_TYPE, data.event_type) || 'Evento')} de ${esc(data.respondent_name)}</h1>
-      <p style="margin:10px 0 0;font-size:13px;color:#e5dbf8;">${[data.event_date, [data.start_time, data.end_time].filter(Boolean).join('–'), data.venue].filter(Boolean).map(esc).join(' · ')}</p>
+      <p style="margin:10px 0 0;font-size:13px;color:#e5dbf8;">${[fmtDate(data.event_date), [data.start_time, data.end_time].filter(Boolean).join('–'), data.venue].filter(Boolean).map(esc).join(' · ')}</p>
     </div>
   </td></tr>`
 
@@ -138,7 +143,7 @@ export function buildEmailHtml(data: BriefingData): string {
     kv('Cliente', `${esc(data.respondent_name)} (${esc(lbl(ROLE, data.respondent_role))})`) +
       kv('Tipo', esc(lbl(EVENT_TYPE, data.event_type))) +
       kv('Local', esc(data.venue)) +
-      kv('Data', esc(data.event_date)) +
+      kv('Data', esc(fmtDate(data.event_date))) +
       kv('Horário', [data.start_time, data.end_time].filter(Boolean).map(esc).join(' às ')) +
       kv('E-mail', `<a href="mailto:${esc(data.email)}" style="color:${VIOLET};">${esc(data.email)}</a>`) +
       kv('WhatsApp', `<a href="${waLink(data.whatsapp)}" style="color:${VIOLET};">${esc(data.whatsapp)}</a>`),
@@ -245,7 +250,7 @@ export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string):
 
   const { Resend } = await import('resend')
   const resend = new Resend(apiKey)
-  const subject = `Novo briefing: ${lbl(EVENT_TYPE, data.event_type)} de ${data.respondent_name} — ${data.event_date || 'data a definir'}`
+  const subject = `Novo briefing: ${lbl(EVENT_TYPE, data.event_type)} de ${data.respondent_name} — ${fmtDate(data.event_date) || 'data a definir'}`
   const attachments = pdfBase64 ? [{ filename: pdfFilename(data), content: Buffer.from(pdfBase64, 'base64') }] : undefined
 
   const { error } = await resend.emails.send({

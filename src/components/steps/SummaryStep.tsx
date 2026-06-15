@@ -15,6 +15,7 @@ import {
 } from '@/config/options'
 import type { BriefingData } from '@/lib/types'
 import { buildRoteiro } from '@/lib/roteiro'
+import { formatDateBR } from '@/lib/format'
 
 interface Props {
   data: BriefingData
@@ -62,7 +63,7 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
         <Row label="E-mail" value={data.email} />
         <Row label="Tipo de evento" value={labelOf(EVENT_TYPE_OPTIONS, data.event_type)} />
         <Row label="Local" value={data.venue} />
-        <Row label="Data" value={data.event_date} />
+        <Row label="Data" value={formatDateBR(data.event_date)} />
         <Row label="Horário" value={[data.start_time, data.end_time].filter(Boolean).join(' às ')} />
       </Section>
 
