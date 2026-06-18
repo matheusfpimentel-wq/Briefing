@@ -47,10 +47,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ ok: false, error: 'Não consegui salvar seu briefing agora. Tente novamente em instantes.' })
     }
 
+    // Link para o DJ reabrir e continuar editando este briefing.
+    const origin =
+      (typeof req.headers.origin === 'string' && req.headers.origin) || (req.headers.host ? `https://${req.headers.host}` : '')
+    const editUrl = origin ? `${origin}/?id=${id}` : ''
+
     // E-mail de notificação. Se falhar, o registro já está salvo —
     // avisamos o cliente para tentar de novo (reenvio é idempotente).
     try {
-      await sendBriefingEmail(data, pdf)
+      await sendBriefingEmail(data, pdf, editUrl)
     } catch (mailErr) {
       console.error('[submit] email error', mailErr)
       return res.status(502).json({ ok: false, error: 'Seu briefing foi salvo, mas houve um erro no envio do aviso. Tente novamente.' })

@@ -8,6 +8,32 @@ export interface ApiResult {
   error?: string
 }
 
+export interface LoadResult {
+  ok: boolean
+  data?: BriefingData
+  status?: string
+  error?: string
+}
+
+/** Carrega um briefing existente pelo id (para o DJ continuar editando). */
+export async function loadBriefing(id: string): Promise<LoadResult> {
+  try {
+    const res = await fetch(`/api/load?id=${encodeURIComponent(id)}`)
+    let payload: { ok?: boolean; data?: BriefingData; status?: string; error?: string } = {}
+    try {
+      payload = await res.json()
+    } catch {
+      /* sem corpo */
+    }
+    if (!res.ok || payload.ok === false) {
+      return { ok: false, error: payload.error || 'Não foi possível carregar o briefing.' }
+    }
+    return { ok: true, data: payload.data, status: payload.status }
+  } catch {
+    return { ok: false, error: 'Sem conexão. Verifique sua internet.' }
+  }
+}
+
 async function postJson(path: string, body: unknown): Promise<ApiResult> {
   const res = await fetch(path, {
     method: 'POST',

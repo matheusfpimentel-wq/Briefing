@@ -23,6 +23,7 @@ interface Props {
   onSubmit: () => void
   submitting: boolean
   error?: string
+  editing?: boolean
 }
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
@@ -49,7 +50,7 @@ function Section({ title, block, onEdit, children }: { title: string; block: num
   )
 }
 
-export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, error }: Props) {
+export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, error, editing }: Props) {
   const phases = energyPhases(data.event_type)
   const momentDefs = momentsFor(data.event_type)
   const roteiro = buildRoteiro(data)
@@ -211,7 +212,7 @@ export default function SummaryStep({ data, onEditBlock, onSubmit, submitting, e
       )}
 
       <button type="button" onClick={onSubmit} disabled={submitting} className="btn-primary w-full text-lg py-4">
-        {submitting ? 'Enviando...' : 'Enviar briefing'}
+        {submitting ? 'Salvando...' : editing ? 'Salvar alterações' : 'Enviar briefing'}
       </button>
 
       <button type="button" onClick={async () => (await import('@/lib/pdf')).downloadBriefingPdf(data)} className="btn-ghost w-full">

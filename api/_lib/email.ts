@@ -126,7 +126,7 @@ function serverRoteiro(data: BriefingData): RItem[] {
   return items
 }
 
-export function buildEmailHtml(data: BriefingData): string {
+export function buildEmailHtml(data: BriefingData, editUrl = ''): string {
   const phases = data.event_type === 'corporativo' ? ENERGY_PHASES_CORPORATE : ENERGY_PHASES_DEFAULT
 
   const header = `<tr><td style="padding:24px;">
@@ -136,6 +136,16 @@ export function buildEmailHtml(data: BriefingData): string {
       <p style="margin:10px 0 0;font-size:13px;color:#e5dbf8;">${[fmtDate(data.event_date), [data.start_time, data.end_time].filter(Boolean).join('–'), data.venue].filter(Boolean).map(esc).join(' · ')}</p>
     </div>
   </td></tr>`
+
+  const editBlock = editUrl
+    ? `<tr><td style="padding:0 24px 8px;">
+        <div style="border:1px solid ${TRACK};border-radius:12px;padding:14px 16px;background:${CARD};">
+          <p style="margin:0 0 8px;font-size:13px;color:${MUTED};">Quer ajustar com o cliente na reunião?</p>
+          <a href="${esc(editUrl)}" style="display:inline-block;background:${VIOLET};color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:9px 16px;border-radius:8px;">Continuar editando este briefing</a>
+          <p style="margin:8px 0 0;font-size:11px;color:${MUTED};word-break:break-all;">${esc(editUrl)}</p>
+        </div>
+      </td></tr>`
+    : ''
 
   // INFORMAÇÕES GERAIS
   const evento = sub(
@@ -221,6 +231,7 @@ export function buildEmailHtml(data: BriefingData): string {
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
         ${header}
+        ${editBlock}
         ${band('Informações gerais')}${evento}${publico}
         ${band('Curadoria musical')}${atmosfera}${direcao}
         ${roteiro ? band('Roteiro') + roteiro : ''}
@@ -242,7 +253,7 @@ function pdfFilename(data: BriefingData): string {
   return `briefing-${slug || 'mazik'}${data.event_date ? `-${data.event_date}` : ''}.pdf`
 }
 
-export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string): Promise<void> {
+export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string, editUrl = ''): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY
   const to = process.env.NOTIFY_EMAIL
   const from = process.env.RESEND_FROM || 'onboarding@resend.dev'
@@ -257,7 +268,7 @@ export async function sendBriefingEmail(data: BriefingData, pdfBase64?: string):
     from,
     to,
     subject,
-    html: buildEmailHtml(data),
+    html: buildEmailHtml(data, editUrl),
     replyTo: data.email || undefined,
     attachments,
   })

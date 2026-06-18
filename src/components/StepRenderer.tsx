@@ -27,9 +27,10 @@ interface Props {
   onSubmit: () => void
   submitting: boolean
   submitError?: string
+  editing?: boolean
 }
 
-export default function StepRenderer({ step, data, errors, update, onEditBlock, onSubmit, submitting, submitError }: Props) {
+export default function StepRenderer({ step, data, errors, update, onEditBlock, onSubmit, submitting, submitError, editing }: Props) {
   const stepProps = { data, update, errors }
 
   if (step.custom) {
@@ -65,7 +66,7 @@ export default function StepRenderer({ step, data, errors, update, onEditBlock, 
       case 'acknowledgements':
         return <AcknowledgementsStep {...stepProps} />
       case 'summary':
-        return <SummaryStep data={data} onEditBlock={onEditBlock} onSubmit={onSubmit} submitting={submitting} error={submitError} />
+        return <SummaryStep data={data} onEditBlock={onEditBlock} onSubmit={onSubmit} submitting={submitting} error={submitError} editing={editing} />
     }
   }
 

@@ -29,7 +29,7 @@ export default function App() {
     if (result.ok) {
       const data = form.data
       form.reset()
-      navigate('/obrigado', { state: { name: data.respondent_name, data } })
+      navigate('/obrigado', { state: { name: data.respondent_name, data, id: form.id, editing: form.editing } })
     } else {
       setSubmitError(result.error || 'Não consegui enviar agora. Tente novamente em instantes.')
     }
@@ -44,6 +44,17 @@ export default function App() {
   }
 
   const nextLabel = form.currentStep?.nextLabel ?? 'Avançar'
+
+  if (form.loading) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center px-6">
+        <div className="glass-panel p-8 text-center">
+          <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-accent-500 border-t-transparent" />
+          <p className="text-slate-600">Carregando o briefing…</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -72,6 +83,11 @@ export default function App() {
       {/* Conteúdo da etapa (centralizado verticalmente, estilo Typeform) */}
       <main className="flex flex-1" onKeyDown={onKeyDown}>
         <div className="m-auto w-full max-w-3xl px-6 py-10 sm:py-16">
+          {form.loadError && (
+            <div className="mb-4 border border-amber-500/50 bg-amber-400/20 p-4 text-sm text-amber-800" role="alert">
+              Não consegui abrir esse briefing ({form.loadError}). Começando um novo no lugar.
+            </div>
+          )}
           <AnimatePresence mode="wait">
             {form.currentStep && (
               <StepShell key={form.currentStep.id} title={form.currentStep.title} subtitle={form.currentStep.subtitle}>
@@ -84,6 +100,7 @@ export default function App() {
                   onSubmit={handleSubmit}
                   submitting={submitting}
                   submitError={submitError}
+                  editing={form.editing}
                 />
               </StepShell>
             )}

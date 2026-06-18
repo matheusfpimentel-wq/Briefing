@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createEmptyBriefing, STEPS, StepDef } from '@/config/formConfig'
-import { saveBriefing } from '@/lib/api'
+import { loadBriefing, saveBriefing } from '@/lib/api'
 import type { BriefingData } from '@/lib/types'
 
 const STORAGE_KEY = 'briefing-mazik:v1'
@@ -39,13 +39,49 @@ function loadPersisted(): Persisted {
   return { id: uuid(), data: createEmptyBriefing(), currentStep: 0 }
 }
 
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+
+/** Lê ?id=<uuid> da URL (modo edição de um briefing existente). */
+function getUrlId(): string | null {
+  try {
+    const p = new URLSearchParams(window.location.search).get('id')
+    return p && UUID_RE.test(p) ? p : null
+  } catch {
+    return null
+  }
+}
+
 export function useBriefingForm() {
-  const initial = useRef<Persisted>(loadPersisted())
+  const urlIdRef = useRef<string | null>(getUrlId())
+  const editing = !!urlIdRef.current
+  const initial = useRef<Persisted>(editing ? { id: urlIdRef.current as string, data: createEmptyBriefing(), currentStep: 0 } : loadPersisted())
   const [id] = useState(initial.current.id)
   const [data, setData] = useState<BriefingData>(initial.current.data)
   const [stepIndex, setStepIndex] = useState(initial.current.currentStep)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(editing)
+  const [loadError, setLoadError] = useState<string | undefined>()
+
+  // Modo edição: carrega o briefing existente do servidor e abre na revisão.
+  useEffect(() => {
+    if (!editing) return
+    let cancelled = false
+    loadBriefing(id).then((res) => {
+      if (cancelled) return
+      if (res.ok && res.data) {
+        setData({ ...createEmptyBriefing(), ...res.data })
+        setStepIndex(9999) // vai para a tela de resumo (última etapa)
+      } else {
+        setLoadError(res.error || 'Briefing não encontrado.')
+      }
+      setLoading(false)
+    })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Etapas visíveis dado o estado atual (lógica condicional).
   const visibleSteps: StepDef[] = useMemo(() => STEPS.filter((s) => (s.when ? s.when(data) : true)), [data])
@@ -55,15 +91,17 @@ export function useBriefingForm() {
   const currentStep = visibleSteps[safeIndex]
   const progress = totalSteps > 1 ? safeIndex / (totalSteps - 1) : 0
 
-  // Persistência local a cada mudança.
+  // Persistência local a cada mudança (desligada no modo edição, que é
+  // ancorado no servidor pelo id da URL).
   useEffect(() => {
+    if (editing || loading) return
     const persisted: Persisted = { id, data, currentStep: safeIndex }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted))
     } catch {
       /* ignore */
     }
-  }, [id, data, safeIndex])
+  }, [editing, loading, id, data, safeIndex])
 
   const update = useCallback((patch: Partial<BriefingData>) => {
     setData((prev) => ({ ...prev, ...patch }))
@@ -152,6 +190,9 @@ export function useBriefingForm() {
     progress,
     isFirst: safeIndex === 0,
     isLast: safeIndex === totalSteps - 1,
+    editing,
+    loading,
+    loadError,
     next,
     back,
     goToStepId,
